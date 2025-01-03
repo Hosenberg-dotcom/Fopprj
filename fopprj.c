@@ -571,7 +571,7 @@ void choose_hero() {
     const char *options[] = {
         "Zakani(@)",
         "Jalili(&)",
-        "Poormohammadi($)",
+        "Poormahammadi($)",
         "Dr.Pezeshkian(~)",
         "Back to Main Menu"
     };
