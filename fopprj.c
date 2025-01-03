@@ -62,6 +62,45 @@ void display_main_menu() {
         for (int i = 0; i < n_options; i++) {
             mvwprintw(menu_win, 4 + i * 4, title_x, "%s", options[i]);
         }
+            // Print ASCII art inside the box, on the left
+        int art1_start_y = 6; // Vertical position for ASCII art
+        int art1_start_x = 4; // Horizontal position for ASCII art
+        mvwprintw(menu_win, art1_start_y, art1_start_x, "       ___------__");
+        mvwprintw(menu_win, art1_start_y + 1, art1_start_x, " |\\__-- /\\       _-");
+        mvwprintw(menu_win, art1_start_y + 2, art1_start_x, " |/    __      -");
+        mvwprintw(menu_win, art1_start_y + 3, art1_start_x, " //\\  /  \\    /__");
+        mvwprintw(menu_win, art1_start_y + 4, art1_start_x, " |  o|  0|__     --_");
+        mvwprintw(menu_win, art1_start_y + 5, art1_start_x, " \\\\____-- __ \\   ___-");
+        mvwprintw(menu_win, art1_start_y + 6, art1_start_x, " (@@    __/  / /_");
+        mvwprintw(menu_win, art1_start_y + 7, art1_start_x, "    -_____---   --_");
+        mvwprintw(menu_win, art1_start_y + 8, art1_start_x, "     //  \\ \\\\   ___-");
+        mvwprintw(menu_win, art1_start_y + 9, art1_start_x, "   //|\\__/  \\\\  \\");
+        mvwprintw(menu_win, art1_start_y + 10, art1_start_x, "   \\_-\\_____/  \\-\\");
+        mvwprintw(menu_win, art1_start_y + 11, art1_start_x, "        // \\\\--\\|   -Hey-");
+        mvwprintw(menu_win, art1_start_y + 12, art1_start_x, "   ____//  ||_");
+        mvwprintw(menu_win, art1_start_y + 13, art1_start_x, "  /_____\\ /___\\");
+        mvwprintw(menu_win, art1_start_y + 14, art1_start_x, "______________________");
+        // Print second ASCII art inside the box
+    int art2_start_y = 6; // Vertical position for ASCII art 2
+    int art2_start_x = (9 * box_width) / 12; // Horizontal position for ASCII art 2
+    mvwprintw(menu_win, art2_start_y, art2_start_x, "         _nnnn_");
+    mvwprintw(menu_win, art2_start_y + 1, art2_start_x, "        dGGGGMMb");
+    mvwprintw(menu_win, art2_start_y + 2, art2_start_x, "       @p~qp~~qMb");
+    mvwprintw(menu_win, art2_start_y + 3, art2_start_x, "       M|@||@) M|");
+    mvwprintw(menu_win, art2_start_y + 4, art2_start_x, "       @,----.JM|");
+    mvwprintw(menu_win, art2_start_y + 5, art2_start_x, "      JS^\\__/  qKL");
+    mvwprintw(menu_win, art2_start_y + 6, art2_start_x, "     dZP        qKRb");
+    mvwprintw(menu_win, art2_start_y + 7, art2_start_x, "    dZP          qKKb");
+    mvwprintw(menu_win, art2_start_y + 8, art2_start_x, "   fZP            SMMb");
+    mvwprintw(menu_win, art2_start_y + 9, art2_start_x, "   HZM            MMMM");
+    mvwprintw(menu_win, art2_start_y + 10, art2_start_x, "   FqM            MMMM");
+    mvwprintw(menu_win, art2_start_y + 11, art2_start_x, " __| \".        |\\dS\"qML");
+    mvwprintw(menu_win, art2_start_y + 12, art2_start_x, " |    `.       | `' \\Zq");
+    mvwprintw(menu_win, art2_start_y + 13, art2_start_x, " _)      \\.___.,|     .'");
+    mvwprintw(menu_win, art2_start_y + 14, art2_start_x, " \\____   )MMMMMP|   .'");
+    mvwprintw(menu_win, art2_start_y + 15, art2_start_x, "      `-'       `--' hjm");
+
+
 
         // Highlight the current option
         mvwchgat(menu_win, 4 + highlight * 4, title_x, strlen(options[highlight]), A_REVERSE, 0, NULL);
