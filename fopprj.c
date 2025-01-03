@@ -8,7 +8,7 @@ void guest_menu();
 void login_menu();
 void sign_in_menu();
 void score_table_menu();
-void music_menu();
+void settings_menu();
 void exit_game();
 void display_loading_bar();
 
@@ -37,7 +37,7 @@ void display_main_menu() {
         "Log in",
         "Sign in",
         "Score table",
-        "Music",
+        "Settings",
         "Exit"
     };
     int n_options = sizeof(options) / sizeof(options[0]);
@@ -145,7 +145,7 @@ void display_main_menu() {
                         return;
                     case 4:
                         delwin(menu_win);
-                        music_menu();
+                        settings_menu();
                         return;
                     case 5:
                         delwin(menu_win);
@@ -198,7 +198,7 @@ void score_table_menu() {
     getch();
 }
 
-void music_menu() {
+void settings_menu() {
     clear();
     mvprintw(2, 10, "=== Music Menu ===");
     mvprintw(4, 10, "This feature is under construction.");
