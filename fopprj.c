@@ -54,19 +54,17 @@ void display_main_menu() {
 
     // Draw the box
     box(menu_win, 0, 0);
-    mvwprintw(menu_win, 0, (box_width - strlen("Main Menu")) / 2, "Main Menu");
-
+    int title_x = (box_width - strlen("Main Menu")) / 2;
+    mvwprintw(menu_win, 0, title_x, "Main Menu");
+    
     while (1) {
         // Print menu options with highlighting
         for (int i = 0; i < n_options; i++) {
-            if (i == highlight) {
-                wattron(menu_win, A_REVERSE); // Highlight the selected option
-            }
-            mvwprintw(menu_win, 2 + i, 2, "%s", options[i]);
-            if (i == highlight) {
-                wattroff(menu_win, A_REVERSE);
-            }
+            mvwprintw(menu_win, 4 + i * 4, title_x, "%s", options[i]);
         }
+
+        // Highlight the current option
+        mvwchgat(menu_win, 4 + highlight * 4, title_x, strlen(options[highlight]), A_REVERSE, 0, NULL);
 
         // Refresh the window
         wrefresh(menu_win);
@@ -168,5 +166,3 @@ void exit_game() {
     refresh();
     getch();
 }
-
-
