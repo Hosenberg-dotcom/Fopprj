@@ -10,6 +10,7 @@ void sign_in_menu();
 void score_table_menu();
 void music_menu();
 void exit_game();
+void display_loading_bar();
 
 int main() {
     // Initialize ncurses
@@ -32,7 +33,7 @@ void display_main_menu() {
     getmaxyx(stdscr, rows, cols);
 
     const char *options[] = {
-        "Guest",
+        "Enter as a Guest",
         "Log in",
         "Sign in",
         "Score table",
@@ -43,6 +44,7 @@ void display_main_menu() {
 
     int highlight = 0; // Tracks the currently highlighted option
     int choice;
+    int dot_count = 0;
 
     // Create a new window for the menu
     int box_start_y = rows / 8;
@@ -54,8 +56,8 @@ void display_main_menu() {
 
     // Draw the box
     box(menu_win, 0, 0);
-    int title_x = (box_width - strlen("Main Menu")) / 2;
-    mvwprintw(menu_win, 0, title_x, "Main Menu");
+    int title_x = (box_width - strlen("The Rogue")) / 2;
+    mvwprintw(menu_win, 0, title_x, "The Rogue");
     
     while (1) {
         // Print menu options with highlighting
@@ -98,13 +100,19 @@ void display_main_menu() {
     mvwprintw(menu_win, art2_start_y + 12, art2_start_x, " |    `.       | `' \\Zq");
     mvwprintw(menu_win, art2_start_y + 13, art2_start_x, " _)      \\.___.,|     .'");
     mvwprintw(menu_win, art2_start_y + 14, art2_start_x, " \\____   )MMMMMP|   .'");
-    mvwprintw(menu_win, art2_start_y + 15, art2_start_x, "      `-'       `--' hjm");
+    mvwprintw(menu_win, art2_start_y + 15, art2_start_x, "      `-'       `--' Wassup");
 
 
 
         // Highlight the current option
         mvwchgat(menu_win, 4 + highlight * 4, title_x, strlen(options[highlight]), A_REVERSE, 0, NULL);
 
+        display_loading_bar(menu_win, box_width, dot_count);
+
+        // Increment dot count
+        dot_count = (dot_count + 1) % 13; // Reset after 12 dots
+        napms(500);
+        nodelay(menu_win, TRUE);
         // Refresh the window
         wrefresh(menu_win);
 
@@ -204,4 +212,25 @@ void exit_game() {
     mvprintw(2, 10, "Exiting the game. Goodbye!");
     refresh();
     getch();
+}
+
+void display_loading_bar(WINDOW *menu_win, int box_width, int dot_count) {
+    const char *loading_text = "Loading"; // Base text for loading
+    int loading_x = (box_width - (strlen(loading_text) + dot_count)) / 2; // Center text horizontally
+    int loading_y = getmaxy(menu_win) - 3; // Position near the bottom of the window
+
+    // Re-draw the left and right border
+    mvwaddch(menu_win, loading_y, 0, ACS_VLINE); // Left border
+    mvwaddch(menu_win, loading_y, box_width - 1, ACS_VLINE); // Right border
+
+    // Create the loading text with dots
+    char loading_with_dots[20];
+    snprintf(loading_with_dots, sizeof(loading_with_dots), "%s%s", loading_text, "............." + (12 - dot_count));
+
+    // Clear only the middle part where loading text is displayed
+    mvwprintw(menu_win, loading_y, 1, "%-*s", box_width - 2, ""); // Clear the line except borders
+
+    // Print the loading text
+    mvwprintw(menu_win, loading_y, loading_x, "%s", loading_with_dots); // Print loading text
+    wrefresh(menu_win); // Refresh the window to display changes
 }
