@@ -4,8 +4,11 @@
 
 // Function prototypes
 void display_main_menu();
-void new_user_menu();
+void guest_menu();
 void login_menu();
+void sign_in_menu();
+void score_table_menu();
+void music_menu();
 void exit_game();
 
 int main() {
@@ -29,8 +32,11 @@ void display_main_menu() {
     getmaxyx(stdscr, rows, cols);
 
     const char *options[] = {
-        "Create New User",
-        "Login",
+        "Guest",
+        "Log in",
+        "Sign in",
+        "Score table",
+        "Music",
         "Exit"
     };
     int n_options = sizeof(options) / sizeof(options[0]);
@@ -42,7 +48,7 @@ void display_main_menu() {
     int box_start_y = rows / 8;
     int box_start_x = cols / 8;
     int box_height = 6 * rows / 8;
-    int box_width = 6* cols / 8;
+    int box_width = 6 * cols / 8;
     WINDOW *menu_win = newwin(box_height, box_width, box_start_y, box_start_x);
     keypad(menu_win, TRUE); // Enable keypad input for the window
 
@@ -78,13 +84,25 @@ void display_main_menu() {
                 switch (highlight) {
                     case 0:
                         delwin(menu_win);
-                        new_user_menu();
+                        guest_menu();
                         return;
                     case 1:
                         delwin(menu_win);
                         login_menu();
                         return;
                     case 2:
+                        delwin(menu_win);
+                        sign_in_menu();
+                        return;
+                    case 3:
+                        delwin(menu_win);
+                        score_table_menu();
+                        return;
+                    case 4:
+                        delwin(menu_win);
+                        music_menu();
+                        return;
+                    case 5:
                         delwin(menu_win);
                         exit_game();
                         return;
@@ -99,9 +117,9 @@ void display_main_menu() {
     delwin(menu_win);
 }
 
-void new_user_menu() {
+void guest_menu() {
     clear();
-    mvprintw(2, 10, "=== Create New User ===");
+    mvprintw(2, 10, "=== Guest Mode ===");
     mvprintw(4, 10, "This feature is under construction.");
     mvprintw(6, 10, "Press any key to return to the main menu.");
     refresh();
@@ -111,6 +129,33 @@ void new_user_menu() {
 void login_menu() {
     clear();
     mvprintw(2, 10, "=== Login ===");
+    mvprintw(4, 10, "This feature is under construction.");
+    mvprintw(6, 10, "Press any key to return to the main menu.");
+    refresh();
+    getch();
+}
+
+void sign_in_menu() {
+    clear();
+    mvprintw(2, 10, "=== Sign In ===");
+    mvprintw(4, 10, "This feature is under construction.");
+    mvprintw(6, 10, "Press any key to return to the main menu.");
+    refresh();
+    getch();
+}
+
+void score_table_menu() {
+    clear();
+    mvprintw(2, 10, "=== Score Table ===");
+    mvprintw(4, 10, "This feature is under construction.");
+    mvprintw(6, 10, "Press any key to return to the main menu.");
+    refresh();
+    getch();
+}
+
+void music_menu() {
+    clear();
+    mvprintw(2, 10, "=== Music Menu ===");
     mvprintw(4, 10, "This feature is under construction.");
     mvprintw(6, 10, "Press any key to return to the main menu.");
     refresh();
