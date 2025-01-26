@@ -1,6 +1,8 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include <regex.h>
 // Function prototypes
 void display_main_menu();
 void guest_menu();
@@ -14,6 +16,7 @@ void choose_hero();
 void select_music();
 void exit_game();
 void display_loading_bar();
+int regex_match();
 
 int main() {
     // Initialize ncurses
@@ -32,7 +35,11 @@ int main() {
 }
 
 void display_main_menu() {
+    clear();
+    refresh();
+    curs_set(0);
     int rows, cols;
+    noecho();
     getmaxyx(stdscr, rows, cols);
 
     const char *options[] = {
@@ -184,13 +191,117 @@ void login_menu() {
 }
 
 void sign_in_menu() {
+    curs_set(1);
     clear();
-    mvprintw(2, 10, "=== Sign In ===");
-    mvprintw(4, 10, "This feature is under construction.");
-    mvprintw(6, 10, "Press any key to return to the main menu.");
+    refresh();
+    int rows, cols;
+    getmaxyx(stdscr, rows, cols);
+    echo();
+    int box_start_y = 2 * rows / 8;
+    int box_start_x = 1 * cols / 8;
+    int box_height = 1 * rows / 2;
+    int box_width = 3 * cols / 4;
+    int valid_input = 0;
+    char username[30];
+    char password[30];
+    char email[50];
+
+    while (!valid_input) {
+        clear();
+        refresh();
+        WINDOW *settings_win = newwin(box_height, box_width, box_start_y, box_start_x);
+        keypad(settings_win, TRUE);
+
+        // Draw the box
+        box(settings_win, 0, 0);
+        int title_x = (box_width - strlen("# Create new account #")) / 2;
+        mvwprintw(settings_win, 0, title_x, "# Create new account #");
+        mvwprintw(settings_win, 3, 2, "Enter Username: ");
+        mvwprintw(settings_win, 6, 2, "Enter Password: ");
+        mvwprintw(settings_win, 9, 2, "Enter Email: ");
+        wrefresh(settings_win);
+        mvwgetnstr(settings_win, 3, 2 + strlen("Enter Username: "), username, 29);
+        mvwgetnstr(settings_win, 6, 2 + strlen("Enter Password: "), password, 29);
+        mvwgetnstr(settings_win, 9, 2 + strlen("Enter Email: "), email, 49);
+
+        FILE *file = fopen("usersInputs.txt", "r");
+        if (file == NULL) {
+            clear();
+            noecho();
+            mvprintw(rows / 2, cols / 2, "Error: Could not open file!");
+            mvprintw(rows / 2 + 2, cols / 2, "Press any key to return to the previous menu...");
+            refresh();
+            getch();
+            curs_set(0);
+            display_main_menu();
+            return;
+        }
+
+        char line[100];
+        int duplicate_found = 0;
+        while (fgets(line, sizeof(line), file)) {
+            char stored_username[30], stored_email[50];
+            sscanf(line, "%29s %*s %49s", stored_username, stored_email);
+            if (strcmp(username, stored_username) == 0) {
+                mvwprintw(settings_win, 12, 2, "Error: Username already exists!");
+                wrefresh(settings_win);
+                duplicate_found = 1;
+                break;
+            }
+            if (strcmp(email, stored_email) == 0) {
+                mvwprintw(settings_win, 12, 2, "Error: Email already exists!");
+                wrefresh(settings_win);
+                duplicate_found = 1;
+                break;
+            }
+        }
+        fclose(file);
+
+        if (duplicate_found) {
+            mvwprintw(settings_win, 15, 2, "Press any key to re-enter details...");
+            wrefresh(settings_win);
+            getch();
+            continue;
+        }
+
+        if (strlen(password) < 7 || !strpbrk(password, "ABCDEFGHIJKLMNOPQRSTUVWXYZ") ||
+            !strpbrk(password, "abcdefghijklmnopqrstuvwxyz") || !strpbrk(password, "0123456789") ||
+            !strpbrk(password, "!@#$%^&*()-_+=")) {
+            mvwprintw(settings_win, 12, 2, "Error: Password must be at least 7 characters long!");
+            mvwprintw(settings_win, 13, 2, "Include uppercase, lowercase, number, and special character.");
+            mvwprintw(settings_win, 15, 2, "Press any key to re-enter details...");
+            wrefresh(settings_win);
+            getch();
+            continue;
+        }
+
+        if (!regex_match(email, "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            mvwprintw(settings_win, 12, 2, "Error: Invalid email format!");
+            mvwprintw(settings_win, 15, 2, "Press any key to re-enter details...");
+            wrefresh(settings_win);
+            getch();
+            continue;
+        }
+
+        valid_input = 1;
+    }
+
+    FILE *file = fopen("usersInputs.txt", "a+");
+    if (file != NULL) {
+        fprintf(file, "%s %s %s\n", username, password, email);
+        fclose(file);
+    }
+    mvprintw(12 + box_start_y, 2 + box_start_x, "User created successfully!");
+    mvprintw(15 + box_start_y, 2 + box_start_x, "Press any key to return to the main menu...");
     refresh();
     getch();
+    curs_set(0);
+    noecho();
+    clear();
+    refresh();
+    display_main_menu();
 }
+
 
 void score_table_menu() {
     clear();
@@ -722,6 +833,7 @@ void exit_game() {
 }
 
 void display_loading_bar(WINDOW *menu_win, int box_width, int dot_count) {
+    noecho();
     const char *loading_text = "Loading"; // Base text for loading
     int loading_x = (box_width - (strlen(loading_text) + dot_count)) / 2; // Center text horizontally
     int loading_y = getmaxy(menu_win) - 3; // Position near the bottom of the window
@@ -740,4 +852,18 @@ void display_loading_bar(WINDOW *menu_win, int box_width, int dot_count) {
     // Print the loading text
     mvwprintw(menu_win, loading_y, loading_x, "%s", loading_with_dots); // Print loading text
     wrefresh(menu_win); // Refresh the window to display changes
+}
+
+int regex_match(const char *string, const char *pattern) {
+    regex_t regex;
+    int ret;
+
+    ret = regcomp(&regex, pattern, REG_EXTENDED);
+    if (ret) {
+        return 0; // Regex compilation failed
+    }
+
+    ret = regexec(&regex, string, 0, NULL, 0);
+    regfree(&regex);
+    return ret == 0;
 }
