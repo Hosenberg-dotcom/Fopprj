@@ -182,12 +182,105 @@ void guest_menu() {
 }
 
 void login_menu() {
+    curs_set(1);
     clear();
-    mvprintw(2, 10, "=== Login ===");
-    mvprintw(4, 10, "This feature is under construction.");
-    mvprintw(6, 10, "Press any key to return to the main menu.");
     refresh();
-    getch();
+    int rows, cols;
+    getmaxyx(stdscr, rows, cols);
+    echo();
+    int box_start_y = 2 * rows / 8;
+    int box_start_x = 1 * cols / 8;
+    int box_height = 1 * rows / 2;
+    int box_width = 3 * cols / 4;
+    int valid_input = 0;
+    char username[30];
+    char password[30];
+    WINDOW *settings_win = newwin(box_height, box_width, box_start_y, box_start_x);
+        keypad(settings_win, TRUE);
+
+        // Draw the box
+        box(settings_win, 0, 0);
+        int title_x = (box_width - strlen("# loging in #")) / 2;
+        mvwprintw(settings_win, 0, title_x, "# loging in #");
+        mvwprintw(settings_win, 3, 2, "Enter Username: ");
+        mvwprintw(settings_win, 6, 2, "Enter Password: ");
+        wrefresh(settings_win);
+        mvwgetnstr(settings_win, 3, 2 + strlen("Enter Username: "), username, 29);
+        mvwgetnstr(settings_win, 6, 2 + strlen("Enter Password: "), password, 29);
+
+        FILE *file = fopen("usersInputs.txt", "r");
+        if (file == NULL) {
+            clear();
+            noecho();
+            mvprintw(rows / 2, cols / 2, "Error: Could not open file!");
+            mvprintw(rows / 2 + 2, cols / 2, "Press any key to return to the previous menu...");
+            refresh();
+            getch();
+            curs_set(0);
+            display_main_menu();
+            return;
+        }
+        int duplicate_found = 0;
+        char line[100];
+        while (fgets(line, sizeof(line), file)) {
+            char stored_username[30], stored_password[50];
+            sscanf(line, "%29s %29s %*s", stored_username, stored_password);
+            if ((strcmp(username, stored_username) == 0) && (strcmp(password, stored_password) == 0)) {
+                duplicate_found = 1;
+                break;
+            }
+        }
+        fclose(file);
+        if(duplicate_found)
+        {
+            mvwprintw(settings_win, 12, 2, "Wellcome to the game %s", username);
+            mvwprintw(settings_win, 13, 2, "please press 1 if you wnat to start a new game or 2 to reload a saved game");
+            wrefresh(settings_win);
+            char a;
+            while(1)
+            {
+                curs_set(0);
+                noecho();
+                a = getch();
+                if(a == '1')
+                {
+                    clear();
+                    curs_set(0);
+                    noecho();
+                    refresh();
+                    display_main_menu();
+                }
+                else if(a == '2')
+                {
+                    clear();
+                    curs_set(0);
+                    noecho();
+                    refresh();
+                    display_main_menu();
+                }
+            }
+        }
+        else
+        {
+            mvwprintw(settings_win, 12, 2, "your username or password did not found");
+            mvwprintw(settings_win, 13, 2, "press any key to return to the main menu");
+            wrefresh(settings_win);
+            getch();
+            clear();
+            curs_set(0);
+            noecho();
+            refresh();
+            display_main_menu();
+            return;
+            getch();
+            clear();
+            curs_set(0);
+            noecho();
+            refresh();
+            display_main_menu();
+            return;
+        }
+
 }
 
 void sign_in_menu() {
