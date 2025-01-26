@@ -652,10 +652,73 @@ void choose_hero() {
 }
 
 void exit_game() {
+    curs_set(0);
     clear();
-    mvprintw(2, 10, "Exiting the game. Goodbye!");
     refresh();
-    getch();
+    int rows, cols;
+    getmaxyx(stdscr, rows, cols);
+     // Create a new window for the settings menu
+    int box_start_y = 3 * rows / 8;
+    int box_start_x = 2 * cols / 8;
+    int box_height = 1 * rows / 4;
+    int box_width = 1 * cols / 2;
+    WINDOW *settings_win = newwin(box_height, box_width, box_start_y, box_start_x);
+    keypad(settings_win, TRUE); // Enable keypad input for the window
+
+    // Draw the box
+    box(settings_win, 0, 0);
+    int title_x = (box_width - strlen("Are you sure you want to leave?")) / 2;
+    mvwprintw(settings_win, 1, title_x, "Are you sure you want to leave?");
+    const char *options[] = {
+        "Yes",
+        "No",
+    };
+    int n_options = sizeof(options) / sizeof(options[0]);
+
+    int highlight = 0; // Tracks the currently highlighted option
+    int choice;
+    while (1) {
+        // Print menu options with highlighting
+        for (int i = 0; i < n_options; i++) {
+            if (i == highlight) {
+                wattron(settings_win, A_REVERSE);
+                mvwprintw(settings_win, 4 + i * 3, (box_width ) / 2, "%s", options[i]);
+                wattroff(settings_win, A_REVERSE);
+            } else {
+                mvwprintw(settings_win, 4 + i * 3, (box_width) / 2, "%s", options[i]);
+            }
+        }
+        // Refresh the window
+        wrefresh(settings_win);
+
+        // Handle user input
+        choice = wgetch(settings_win);
+        switch (choice) {
+            case KEY_UP:
+                highlight = (highlight - 1 + n_options) % n_options;
+                break;
+            case KEY_DOWN:
+                highlight = (highlight + 1) % n_options;
+                break;
+            case '\n': // Enter key
+                switch (highlight) {
+                    case 0:
+                        delwin(settings_win);
+                        return;
+                    case 1:
+                        delwin(settings_win);
+                        display_main_menu();
+                        return;
+                }
+                break;
+                default:
+                break;
+                 }
+    }
+
+    // Delete the window at the end
+    delwin(settings_win);
+    
 }
 
 void display_loading_bar(WINDOW *menu_win, int box_width, int dot_count) {
