@@ -20,10 +20,32 @@ void display_game() {
         }
         //printw("\n");
     }
+    int flag = 0;
+    for(int i = 0; i < rows; i++)
+    {
+        for(int j = 0; j < cols; j++)
+        {
+            if(first_map[i][j] == '.')
+            {
+                Character hero;
+                hero.position.y = i + 2;
+                hero.position.x = j;
+                hero.symbol = '@';
+                mvprintw(hero.position.y, hero.position.x, "%c", hero.symbol);
+                first_map[hero.position.y - 2][hero.position.x] = hero.symbol;
+                refresh();
+                character_move(&hero, first_map);
+                flag = 1;
+                break;
+            }
+            if(flag)
+                break;
+        }
+    }
     //getch();
     refresh();
     curs_set(0);
-    getch();
+    //getch();
     display_main_menu();
 }
 

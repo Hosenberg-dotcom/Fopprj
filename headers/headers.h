@@ -13,15 +13,20 @@
 
 #define MAX_QUEUE_SIZE 1000
 
-typedef struct {
+typedef struct Point{
     int x, y;
 } Point;
 
 // صف برای الگوریتم BFS
-typedef struct {
+typedef struct Queue{
     Point points[MAX_QUEUE_SIZE];
     int front, rear;
 } Queue;
+
+typedef struct Character{
+    Point position;
+    char symbol; // نماد قهرمان
+} Character;
 // Function prototypes
 void display_main_menu();
 void guest_menu();
@@ -46,5 +51,6 @@ void init_queue(Queue* q);
 int is_empty(Queue* q);
 void enqueue(Queue* q, int x, int y);
 Point dequeue(Queue* q);
+void character_move(Character* charecter, char** my_map);
 
 #endif
