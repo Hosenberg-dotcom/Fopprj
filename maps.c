@@ -21,7 +21,7 @@ void display_game() {
         for (int j = 0; j < cols; j++) {
             mvprintw(i + 2, j,"%c", main_game->floors[0].map[i][j]);
         }
-        //printw("\n");
+       
     }
     int flag = 0;
     for(int i = 0; i < rows; i++)
@@ -45,10 +45,10 @@ void display_game() {
                 break;
         }
     }
-    //getch();
+    
     refresh();
     curs_set(0);
-    //getch();
+
     display_main_menu();
 }
 
@@ -104,27 +104,6 @@ void add_room(Floor* my_floor, int x, int y, Room* thisRoom) {
 
         my_floor->map[thisRoom->doors[i].y][thisRoom->doors[i].x] = '+';
     }
-    /*int door_positions[4][2];
-
-    // بالا
-    door_positions[0][0] = x + 1 + rand() % (room_width - 2);
-    door_positions[0][1] = y;
-
-    // پایین
-    door_positions[1][0] = x + 1 + rand() % (room_width - 2);
-    door_positions[1][1] = y + room_height - 1;
-
-    // چپ
-    door_positions[2][0] = x;
-    door_positions[2][1] = y + 1 + rand() % (room_height - 2);
-
-    // راست
-    door_positions[3][0] = x + room_width - 1;
-    door_positions[3][1] = y + 1 + rand() % (room_height - 2);
-
-    for (int i = 0; i < 4; i++) {
-        map[door_positions[i][1]][door_positions[i][0]] = '+';
-    }*/
 
 }
 
@@ -150,7 +129,6 @@ void add_corridor(char** map, int start_x, int start_y, int end_x, int end_y, in
         Point curr = dequeue(&q);
 
         if (curr.x == end_x && curr.y == end_y) {
-            // مسیر پیدا شد
             while (previous[curr.y][curr.x].x != -1 && previous[curr.y][curr.x].y != -1) {
                 if (map[curr.y][curr.x] == ' ') {
                     map[curr.y][curr.x] = '#';
@@ -165,7 +143,7 @@ void add_corridor(char** map, int start_x, int start_y, int end_x, int end_y, in
             int new_y = curr.y + directions[i][1];
 
             if (new_x >= 0 && new_x < width && new_y >= 0 && new_y < height && !visited[new_y][new_x]) {
-                if (map[new_y][new_x] == ' ' || map[new_y][new_x] == '+') {
+                if (map[new_y][new_x] == ' ' || map[new_y][new_x] == '+' || map[new_y][new_x] == '#') {
                     visited[new_y][new_x] = 1;
                     previous[new_y][new_x] = curr;
                     enqueue(&q, new_x, new_y);
@@ -174,6 +152,7 @@ void add_corridor(char** map, int start_x, int start_y, int end_x, int end_y, in
         }
     }
 }
+
 
 
 
@@ -191,40 +170,63 @@ int check_collision(int x, int y, Floor* my_floor, Room thisRoom) {
 void generate_random_map(Floor* my_floor) {
     int rooms_created = 0;
     int prev_door_x = -1, prev_door_y = -1;
-    for(int l = 0; rooms_created < my_floor->room_count; l++) {
-        my_floor->rooms[l].width = (rand() % 5) + 6; // عرض تصادفی (حداقل 4)
-        my_floor->rooms[l].height = (rand() % 3) + 6; // ارتفاع تصادفی (حداقل 4)
-        int x = rand() % (my_floor->width - my_floor->rooms[l].width);
-        int y = rand() % (my_floor->height - my_floor->rooms[l].height);
 
-        if (!check_collision(x, y, my_floor, my_floor->rooms[l])) {
-            add_room(my_floor, x, y, &(my_floor->rooms[l]));
+    while (rooms_created < my_floor->room_count) {
+        Room* room = &my_floor->rooms[rooms_created];
 
-            // پیدا کردن در برای اتصال راهرو
-            int door_x = x + my_floor->rooms[l].width / 2;
-            int door_y = y + my_floor->rooms[l].height / 2;
-            for (int i = y; i < y + my_floor->rooms[l].height; i++) {
-                for (int j = x; j < x + my_floor->rooms[l].width; j++) {
-                    if (my_floor->map[i][j] == '+') {
-                        door_x = j;
-                        door_y = i;
-                    }
-                }
-            }
+        room->width = (rand() % 5) + 6;
+        room->height = (rand() % 3) + 6;
+        int x = rand() % (my_floor->width - room->width);
+        int y = rand() % (my_floor->height - room->height);
 
-            // اتصال به اتاق قبلی
+        if (!check_collision(x, y, my_floor, *room)) {
+            add_room(my_floor, x, y, room);
+
+            // اتصال در اولیه به اتاق قبلی
+            int door_x = room->doors[0].x;
+            int door_y = room->doors[0].y;
             if (rooms_created > 0) {
                 add_corridor(my_floor->map, prev_door_x, prev_door_y, door_x, door_y, my_floor->width, my_floor->height);
             }
-
-            // ذخیره در برای اتصال بعدی
             prev_door_x = door_x;
             prev_door_y = door_y;
-
             rooms_created++;
         }
     }
+
+    // اطمینان از اتصال همه‌ی درها به راهرو یا درهای دیگر
+    for (int i = 0; i < my_floor->room_count; i++) {
+        Room* room = &my_floor->rooms[i];
+        for (int j = 0; j < room->door_count; j++) {
+            Point door = room->doors[j];
+
+            // بررسی اتصال در به راهرو
+            int connected = 0;
+            for (int d = 0; d < 4; d++) {
+                int nx = door.x + (d == 1) - (d == 3);
+                int ny = door.y + (d == 2) - (d == 0);
+                if (nx >= 0 && nx < my_floor->width && ny >= 0 && ny < my_floor->height && my_floor->map[ny][nx] == '#') {
+                    connected = 1;
+                    break;
+                }
+            }
+
+            // اگر در متصل نبود، یک راهرو جدید اضافه می‌شود
+            if (!connected) {
+                for (int k = 0; k < my_floor->room_count; k++) {
+                    if (k == i) continue;
+                    for (int l = 0; l < my_floor->rooms[k].door_count; l++) {
+                        add_corridor(my_floor->map, door.x, door.y, my_floor->rooms[k].doors[l].x, my_floor->rooms[k].doors[l].y, my_floor->width, my_floor->height);
+                        connected = 1;
+                        break;
+                    }
+                    if (connected) break;
+                }
+            }
+        }
+    }
 }
+
 void init_queue(Queue* q) {
     q->front = 0;
     q->rear = 0;
