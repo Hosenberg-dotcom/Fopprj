@@ -8,15 +8,18 @@ void display_game() {
     noecho();
     getmaxyx(stdscr, rows, cols);
     rows -= 4;
-    char** first_map = create_empty_map(cols, rows);
-    //getch();
-    int room_count = rand() % 4 + 6;
-    generate_random_map(first_map, cols, rows, room_count);
-    //mvprintw(5, 5, "qqqq");
-    //getch();
+    Game* main_game = calloc(1, sizeof(Game));
+    for(int i = 0; i < 4; i++)
+    {
+        main_game->floors[i].map = create_empty_map(cols, rows);
+        main_game->floors[i].height = rows;
+        main_game->floors[i].width = cols;
+        main_game->floors[i].room_count = rand() % 4 + 6;
+        generate_random_map(&(main_game->floors[i]));
+    }
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            mvprintw(i + 2, j,"%c", first_map[i][j]);
+            mvprintw(i + 2, j,"%c", main_game->floors[0].map[i][j]);
         }
         //printw("\n");
     }
@@ -25,16 +28,16 @@ void display_game() {
     {
         for(int j = 0; j < cols; j++)
         {
-            if(first_map[i][j] == '.')
+            if(main_game->floors[0].map[i][j] == '.')
             {
                 Character hero;
                 hero.position.y = i + 2;
                 hero.position.x = j;
                 hero.symbol = '@';
                 mvprintw(hero.position.y, hero.position.x, "%c", hero.symbol);
-                first_map[hero.position.y - 2][hero.position.x] = hero.symbol;
+                main_game->floors[0].map[hero.position.y - 2][hero.position.x] = hero.symbol;
                 refresh();
-                character_move(&hero, first_map);
+                character_move(&hero, main_game->floors[0].map);
                 flag = 1;
                 break;
             }
@@ -60,23 +63,48 @@ char** create_empty_map(int width, int height) {
     return map;
 }
 
-void add_room(char** map, int x, int y, int room_width, int room_height) {
-    for (int i = y; i < y + room_height; i++) {
-        for (int j = x; j < x + room_width; j++) {
-            if (i == y || i == y + room_height - 1 || j == x || j == x + room_width - 1) {
-                map[i][j] = (j == x || j == x + room_width - 1) ? '|' : '_';
+void add_room(Floor* my_floor, int x, int y, Room* thisRoom) {
+    for (int i = y; i < y + thisRoom->height; i++) {
+        for (int j = x; j < x + thisRoom->width; j++) {
+            if (i == y || i == y + thisRoom->height - 1 || j == x || j == x + thisRoom->width - 1) {
+                my_floor->map[i][j] = (j == x || j == x + thisRoom->width - 1) ? '|' : '_';
             }
             else {
-                map[i][j] = '.';
+                my_floor->map[i][j] = '.';
             }
-            if((i == y && j == x) || (i == y && j == x + room_width - 1))
+            if((i == y && j == x) || (i == y && j == x + thisRoom->width - 1))
             {
-                map[i][j] = ' ';
+                my_floor->map[i][j] = ' ';
             }
         }
     }
-    // افزودن درها روی هر چهار دیوار
-    int door_positions[4][2];
+    thisRoom->door_count = rand() % 4 + 1;
+    int used_walls[4] = {0, 0, 0, 0};
+    for (int i = 0; i < thisRoom->door_count; i++) {
+        int where;
+        do {
+            where = rand() % 4;
+        } while (used_walls[where]); 
+
+        used_walls[where] = 1;
+
+        if (where == 0) { 
+            thisRoom->doors[i].x = x + 1 + rand() % (thisRoom->width - 2);
+            thisRoom->doors[i].y = y;
+        } else if (where == 1) { 
+            thisRoom->doors[i].x = x + 1 + rand() % (thisRoom->width - 2);
+            thisRoom->doors[i].y = y + thisRoom->height - 1;
+        } else if (where == 2) { 
+            thisRoom->doors[i].x = x;
+            thisRoom->doors[i].y = y + 1 + rand() % (thisRoom->height - 2);
+        } else if (where == 3) { 
+            thisRoom->doors[i].x = x + thisRoom->width - 1;
+            thisRoom->doors[i].y = y + 1 + rand() % (thisRoom->height - 2);
+        }
+
+        my_floor->map[thisRoom->doors[i].y][thisRoom->doors[i].x] = '+';
+    }
+    /*int door_positions[4][2];
 
     // بالا
     door_positions[0][0] = x + 1 + rand() % (room_width - 2);
@@ -96,7 +124,7 @@ void add_room(char** map, int x, int y, int room_width, int room_height) {
 
     for (int i = 0; i < 4; i++) {
         map[door_positions[i][1]][door_positions[i][0]] = '+';
-    }
+    }*/
 
 }
 
@@ -149,10 +177,10 @@ void add_corridor(char** map, int start_x, int start_y, int end_x, int end_y, in
 
 
 
-int check_collision(char** map, int x, int y, int room_width, int room_height, int map_width, int map_height) {
-    for (int i = y - 1; i <= y + room_height; i++) {
-        for (int j = x - 1; j <= x + room_width; j++) {
-            if (i < 0 || i >= map_height || j < 0 || j >= map_width || map[i][j] != ' ') {
+int check_collision(int x, int y, Floor* my_floor, Room thisRoom) {
+    for (int i = y - 1; i <= y + thisRoom.height; i++) {
+        for (int j = x - 1; j <= x + thisRoom.width; j++) {
+            if (i < 0 || i >= my_floor->height || j < 0 || j >= my_floor->width || my_floor->map[i][j] != ' ') {
                 return 1; // برخورد وجود دارد
             }
         }
@@ -160,24 +188,24 @@ int check_collision(char** map, int x, int y, int room_width, int room_height, i
     return 0; // بدون برخورد
 }
 
-void generate_random_map(char** map, int map_width, int map_height, int room_count) {
+void generate_random_map(Floor* my_floor) {
     int rooms_created = 0;
     int prev_door_x = -1, prev_door_y = -1;
-    while (rooms_created < room_count) {
-        int room_width = (rand() % 5) + 6; // عرض تصادفی (حداقل 4)
-        int room_height = (rand() % 3) + 6; // ارتفاع تصادفی (حداقل 4)
-        int x = rand() % (map_width - room_width);
-        int y = rand() % (map_height - room_height);
+    for(int l = 0; rooms_created < my_floor->room_count; l++) {
+        my_floor->rooms[l].width = (rand() % 5) + 6; // عرض تصادفی (حداقل 4)
+        my_floor->rooms[l].height = (rand() % 3) + 6; // ارتفاع تصادفی (حداقل 4)
+        int x = rand() % (my_floor->width - my_floor->rooms[l].width);
+        int y = rand() % (my_floor->height - my_floor->rooms[l].height);
 
-        if (!check_collision(map, x, y, room_width, room_height, map_width, map_height)) {
-            add_room(map, x, y, room_width, room_height);
+        if (!check_collision(x, y, my_floor, my_floor->rooms[l])) {
+            add_room(my_floor, x, y, &(my_floor->rooms[l]));
 
             // پیدا کردن در برای اتصال راهرو
-            int door_x = x + room_width / 2;
-            int door_y = y + room_height / 2;
-            for (int i = y; i < y + room_height; i++) {
-                for (int j = x; j < x + room_width; j++) {
-                    if (map[i][j] == '+') {
+            int door_x = x + my_floor->rooms[l].width / 2;
+            int door_y = y + my_floor->rooms[l].height / 2;
+            for (int i = y; i < y + my_floor->rooms[l].height; i++) {
+                for (int j = x; j < x + my_floor->rooms[l].width; j++) {
+                    if (my_floor->map[i][j] == '+') {
                         door_x = j;
                         door_y = i;
                     }
@@ -186,7 +214,7 @@ void generate_random_map(char** map, int map_width, int map_height, int room_cou
 
             // اتصال به اتاق قبلی
             if (rooms_created > 0) {
-                add_corridor(map, prev_door_x, prev_door_y, door_x, door_y, map_width, map_height);
+                add_corridor(my_floor->map, prev_door_x, prev_door_y, door_x, door_y, my_floor->width, my_floor->height);
             }
 
             // ذخیره در برای اتصال بعدی
