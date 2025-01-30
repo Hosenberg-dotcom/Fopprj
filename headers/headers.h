@@ -15,53 +15,109 @@
 #define MAX_ITEMS 10
 #define MAX_ROOMS 50
 #define MAX_FLOORS 4
-#define MAX_MONSTERS 1
-#define MAX_DOORS 4
+#define MAX_ROOM_MONSTERS 1
+#define MAX_ROOM_DOORS 4
+#define MAX_FOOD 100
+#define MAX_WEAPONS 200
+#define MAX_SPELLS 20
+#define MAX_ROOM_FOOD 2
+#define MAX_ROOM_WEAPONS 1
+#define MAX_ROOM_SPELLS 1
+#define MAX_ROOM_GOLDS 4
+#define MAX_ROOM_TRAP 2
 
 typedef struct Point{
     int x, y;
 } Point;
 
-typedef struct Item{
-    char name[20]; 
-    char symbol;    
-    struct Point position; 
-} Item;
+typedef struct Food{
+    int type;
+    char symbol;
+    int health_care;
+    int speed_raise;
+    int power_raise;
+    Point position;
+}Food;
 
+typedef struct Weapons{
+    int type;
+    char symbol;
+    int damage;
+    int range_type;
+    int range;
+    int collect_numbers;
+    Point position;
+}Weapons;
 
+typedef struct Spell{
+    int type;
+    char symbol;
+    int time_left;
+    Point position;
+}Spell;
 
-typedef struct Queue{
-    Point points[MAX_QUEUE_SIZE];
-    int front, rear;
-} Queue;
+typedef struct Monsters{
+    int type;
+    char symbol;
+    int health;
+    int damage;
+    int move_type;
+    Point position;
+}Monsters;
+
+typedef struct GoldType{
+    int type;
+    char symbol;
+    Point position;
+}GoldType;
 
 typedef struct Character{
     Point position;
     char symbol;
     int health;
+    int color;
+    Food my_foods[MAX_FOOD];
+    Weapons my_weapons[MAX_WEAPONS];
+    Spell my_spells[MAX_SPELLS];
 } Character;
 
 typedef struct Room{
+    int type;
     Point position;    
     int width, height; 
-    Item items[MAX_ITEMS]; 
-    int item_count;    
-    Point doors[MAX_DOORS];    
+    Food room_foods[MAX_ROOM_FOOD];
+    int food_count;
+    Weapons room_weapons[MAX_ROOM_WEAPONS];
+    int weapon_count;
+    Spell room_spells[MAX_ROOM_SPELLS];  
+    int spell_count;  
+    Point doors[MAX_ROOM_DOORS];    
     int door_count;
-    Character monsters[MAX_MONSTERS];
+    Monsters monster[MAX_ROOM_MONSTERS];
+    int monster_count;
+    GoldType golds[MAX_ROOM_GOLDS];
+    int gold_count;
+    Point trap_position[MAX_ROOM_TRAP];
+    int trap_count;
 } Room;
 
 typedef struct Floor{
     Room rooms[MAX_ROOMS]; 
     int room_count;        
     char** map;           
-    int width, height;   
+    int width, height;  
+    Point stairs_position; 
 } Floor;
 
 typedef struct Game{
     Floor floors[4];
     int gold; 
 } Game;
+
+typedef struct Queue{
+    Point points[MAX_QUEUE_SIZE];
+    int front, rear;
+} Queue;
 // Function prototypes
 void display_main_menu();
 void guest_menu();
