@@ -10,6 +10,8 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <time.h>
+#include <wchar.h>
+#include <locale.h>
 
 #define MAX_QUEUE_SIZE 1000
 #define MAX_ITEMS 10
@@ -62,7 +64,7 @@ typedef struct Monsters{
     int health;
     int damage;
     int move_type;
-    Point position;
+    Point* position;
 }Monsters;
 
 typedef struct GoldType{
@@ -82,7 +84,7 @@ typedef struct Character{
 } Character;
 
 typedef struct Room{
-    int type;
+    int type; //صفر معمولی یک کابوس دو گنج
     Point position;    
     int width, height; 
     Food room_foods[MAX_ROOM_FOOD];
@@ -143,5 +145,6 @@ int is_empty(Queue* q);
 void enqueue(Queue* q, int x, int y);
 Point dequeue(Queue* q);
 void character_move(Character* charecter, char** my_map);
+void add_items_to_rooms(Floor* my_floor, int floor_index);
 
 #endif

@@ -1,5 +1,6 @@
 #include "headers.h"
 int main() {
+    setlocale(LC_ALL, "");
     // Initialize ncurses
     initscr();
     noecho();

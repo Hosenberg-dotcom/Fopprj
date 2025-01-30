@@ -16,6 +16,7 @@ void display_game() {
         main_game->floors[i].width = cols;
         main_game->floors[i].room_count = rand() % 4 + 6;
         generate_random_map(&(main_game->floors[i]));
+        add_items_to_rooms(&(main_game->floors[i]), i);
     }
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
@@ -68,8 +69,7 @@ void generate_random_map(Floor* my_floor) {
     int prev_door_x = -1, prev_door_y = -1;
 
     while (rooms_created < my_floor->room_count) {
-        Room* room = &my_floor->rooms[rooms_created];
-
+        Room* room = &(my_floor->rooms[rooms_created]);
         room->width = (rand() % 5) + 6;
         room->height = (rand() % 3) + 6;
         int x = rand() % (my_floor->width - room->width);
@@ -135,6 +135,8 @@ int check_collision(int x, int y, Floor* my_floor, Room thisRoom) {
 }
 
 void add_room(Floor* my_floor, int x, int y, Room* thisRoom) {
+    thisRoom->position.x = x;
+    thisRoom->position.y = y;
     for (int i = y; i < y + thisRoom->height; i++) {
         for (int j = x; j < x + thisRoom->width; j++) {
             if (i == y || i == y + thisRoom->height - 1 || j == x || j == x + thisRoom->width - 1) {
