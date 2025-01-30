@@ -23,13 +23,13 @@ typedef struct Point{
 } Point;
 
 typedef struct Item{
-    char name[20]; // نام آیتم یا دشمن
-    char symbol;     // نوع (مثلاً 'W' برای سلاح، 'T' برای تله، 'E' برای دشمن)
-    struct Point position; // موقعیت در اتاق
+    char name[20]; 
+    char symbol;    
+    struct Point position; 
 } Item;
 
 
-// صف برای الگوریتم BFS
+
 typedef struct Queue{
     Point points[MAX_QUEUE_SIZE];
     int front, rear;
@@ -42,20 +42,20 @@ typedef struct Character{
 } Character;
 
 typedef struct Room{
-    Point position;    // موقعیت اتاق در نقشه
-    int width, height; // ابعاد اتاق
-    Item items[MAX_ITEMS]; // آیتم‌ها، تله‌ها و دشمنان در اتاق
-    int item_count;     // تعداد آیتم‌ها
-    Point doors[MAX_DOORS];     // موقعیت درها (حداکثر 4 در)
+    Point position;    
+    int width, height; 
+    Item items[MAX_ITEMS]; 
+    int item_count;    
+    Point doors[MAX_DOORS];    
     int door_count;
     Character monsters[MAX_MONSTERS];
 } Room;
 
 typedef struct Floor{
-    Room rooms[MAX_ROOMS]; // اتاق‌های هر طبقه
-    int room_count;        // تعداد اتاق‌ها
-    char** map;           // نقشه‌ی طبقه
-    int width, height;    // ابعاد نقشه
+    Room rooms[MAX_ROOMS]; 
+    int room_count;        
+    char** map;           
+    int width, height;   
 } Floor;
 
 typedef struct Game{
