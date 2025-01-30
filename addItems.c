@@ -1,5 +1,6 @@
 #include "headers.h"
 
+//مشکل داره هم رندوم بودنش خوب نیست هم آندد نداره
 void add_items_to_rooms(Floor* my_floor, int floor_index) {
     for (int i = 0; i < my_floor->room_count; i++) {
         Room* room = &my_floor->rooms[i];

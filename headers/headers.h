@@ -120,6 +120,13 @@ typedef struct Queue{
     Point points[MAX_QUEUE_SIZE];
     int front, rear;
 } Queue;
+
+typedef struct {
+    int width;
+    int screen_height;
+    int type;
+    WINDOW* win;
+} MessageWindow;
 // Function prototypes
 void display_main_menu();
 void guest_menu();
@@ -144,7 +151,10 @@ void init_queue(Queue* q);
 int is_empty(Queue* q);
 void enqueue(Queue* q, int x, int y);
 Point dequeue(Queue* q);
-void character_move(Character* charecter, char** my_map);
+void character_move(Character* charecter, char** my_map, MessageWindow* msg_win);
 void add_items_to_rooms(Floor* my_floor, int floor_index);
+MessageWindow* init_message_window(int width,int height, int y);
+void print_message(MessageWindow* msg_win, const char* msg);
+void destroy_message_window(MessageWindow* msg_win);
 
 #endif

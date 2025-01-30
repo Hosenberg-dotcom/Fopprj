@@ -4,6 +4,8 @@ int main() {
     // Initialize ncurses
     initscr();
     noecho();
+    start_color();
+    init_pair(1, COLOR_RED, COLOR_BLACK);
     cbreak();
     keypad(stdscr, TRUE);
     curs_set(0); // Hide the cursor

@@ -7,7 +7,7 @@ void display_game() {
     int rows, cols;
     noecho();
     getmaxyx(stdscr, rows, cols);
-    rows -= 4;
+    rows -= 6;
     Game* main_game = calloc(1, sizeof(Game));
     for(int i = 0; i < 4; i++)
     {
@@ -20,10 +20,12 @@ void display_game() {
     }
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            mvprintw(i + 2, j,"%c", main_game->floors[0].map[i][j]);
+            mvprintw(i + 3, j,"%c", main_game->floors[0].map[i][j]);
         }
        
     }
+    MessageWindow* msg_win = init_message_window(cols, rows + 6, 0);
+    MessageWindow* data_menu = init_message_window(cols, rows + 6, 1);
     int flag = 0;
     for(int i = 0; i < rows; i++)
     {
@@ -32,13 +34,13 @@ void display_game() {
             if(main_game->floors[0].map[i][j] == '.')
             {
                 Character hero;
-                hero.position.y = i + 2;
+                hero.position.y = i + 3;
                 hero.position.x = j;
                 hero.symbol = '@';
                 mvprintw(hero.position.y, hero.position.x, "%c", hero.symbol);
-                main_game->floors[0].map[hero.position.y - 2][hero.position.x] = hero.symbol;
+                main_game->floors[0].map[hero.position.y - 3][hero.position.x] = hero.symbol;
                 refresh();
-                character_move(&hero, main_game->floors[0].map);
+                character_move(&hero, main_game->floors[0].map, msg_win);
                 flag = 1;
                 break;
             }
@@ -46,7 +48,8 @@ void display_game() {
                 break;
         }
     }
-    
+    destroy_message_window(msg_win);
+    destroy_message_window(data_menu);
     refresh();
     curs_set(0);
 
