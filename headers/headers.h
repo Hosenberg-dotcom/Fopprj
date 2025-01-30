@@ -17,13 +17,13 @@
 #define MAX_ITEMS 10
 #define MAX_ROOMS 50
 #define MAX_FLOORS 4
-#define MAX_ROOM_MONSTERS 1
+#define MAX_ROOM_MONSTERS 2
 #define MAX_ROOM_DOORS 4
 #define MAX_FOOD 100
 #define MAX_WEAPONS 200
 #define MAX_SPELLS 20
 #define MAX_ROOM_FOOD 2
-#define MAX_ROOM_WEAPONS 1
+#define MAX_ROOM_WEAPONS 3
 #define MAX_ROOM_SPELLS 1
 #define MAX_ROOM_GOLDS 4
 #define MAX_ROOM_TRAP 2
