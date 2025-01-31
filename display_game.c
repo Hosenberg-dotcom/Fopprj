@@ -18,12 +18,7 @@ void display_game() {
         generate_random_map(&(main_game->floors[i]));
         add_items_to_rooms(&(main_game->floors[i]), i);
     }
-
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            mvprintw(i + 3, j, "%c", main_game->floors[0].map[i][j]);
-        }
-    }
+    for(int i = 0; i < 4; i++) main_game->floors[i].show_full_map = 0;
 
     MessageWindow* msg_win = init_message_window(cols, rows + 6, 0);
     MessageWindow* data_win = init_message_window(cols, rows + 6, 1);
@@ -34,7 +29,7 @@ void display_game() {
     int random_room_index = (rand() % main_game->floors[0].room_count);
     Room* random_room = &(main_game->floors[0].rooms[random_room_index]);
 
-    
+
     int x, y;
     do {
         x = random_room->position.x + (rand() % (random_room->width - 2)) + 1;
@@ -42,14 +37,11 @@ void display_game() {
     } while (main_game->floors[0].map[y][x] != '.');  // تا زمانی که نقطه خالی پیدا شود
 
     main_game->hero.position.x = x;
-    main_game->hero.position.y = y + 3;  // جبران آفست چاپ در ترمینال
-
-    mvprintw(main_game->hero.position.y, main_game->hero.position.x, "%c", main_game->hero.symbol);
+    main_game->hero.position.y = y;
     main_game->floors[0].map[y][x] = main_game->hero.symbol;
+    print_room(main_game, 0);
     refresh();
-
-    
-    character_move(&(main_game->hero), main_game->floors[0].map, msg_win, data_win, 0);
+    character_move(main_game, msg_win, data_win, 0);
 
     destroy_message_window(msg_win);
     destroy_message_window(data_win);

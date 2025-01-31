@@ -115,7 +115,9 @@ typedef struct Floor{
     int room_count;        
     char** map;           
     int width, height;  
-    Point stairs_position; 
+    Point stairs_position;
+    int printed_map[200][200]; 
+    int show_full_map;
 } Floor;
 
 typedef struct Game{
@@ -165,12 +167,16 @@ void init_queue(Queue* q);
 int is_empty(Queue* q);
 void enqueue(Queue* q, int x, int y);
 Point dequeue(Queue* q);
-void character_move(Character* charecter, char** my_map, MessageWindow* msg_win,MessageWindow* data_win, int level);
+void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_win, int level);
 void add_items_to_rooms(Floor* my_floor, int floor_index);
 MessageWindow* init_message_window(int width,int height, int y);
 void print_message(MessageWindow* msg_win, const char* msg);
 void destroy_message_window(MessageWindow* msg_win);
 Character creat_hero(int health, char symbol, int color, int gold, int food_count, int weapon_count, int spell_count);
 void print_data(MessageWindow* data_win, Character hero, int level);
+void print_room(Game* main_game, int level);
+void print_corridors(Game* main_game, int level);
+void toggle_map_display(Game* main_game, int level);
+void update_map(Game* main_game, int level);
 
 #endif

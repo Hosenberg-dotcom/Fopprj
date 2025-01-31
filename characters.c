@@ -6,6 +6,8 @@ Character creat_hero(int health, char symbol, int color, int gold, int food_coun
     hero.color = color;
     hero.food_count = food_count;
     hero.gold = gold;
+    hero.position.x = 0;
+    hero.position.y = 0;
     hero.health = health;
     hero.spell_count =spell_count;
     hero.symbol = symbol;
@@ -13,14 +15,16 @@ Character creat_hero(int health, char symbol, int color, int gold, int food_coun
     return hero;
 }
 
-void character_move(Character* charecter, char** my_map, MessageWindow* msg_win,MessageWindow* data_win, int level)
+void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_win, int level)
 {
     int ch;
     char my_ch = '.';
     Point newPosition;
+    int flag;
     while((ch = getch()) != 'q')
     {
-        newPosition = charecter->position;
+        flag = 0;
+        newPosition = main_game->hero.position;
         switch (ch) {
             
             case '8':
@@ -52,20 +56,36 @@ void character_move(Character* charecter, char** my_map, MessageWindow* msg_win,
                 newPosition.y++;
                 newPosition.x++;
                 break; 
+            case 'm':
+                flag = 1;
+                toggle_map_display(main_game, level);
+                break;
     }
-    switch(my_map[newPosition.y - 3][newPosition.x])
+    if(flag)
+        continue;
+    switch(main_game->floors[level].map[newPosition.y][newPosition.x])
     {
         case '+':
         case '.':
         case '#':
-            my_map[charecter->position.y - 3][charecter->position.x] = my_ch;
-            mvaddch(charecter->position.y, charecter->position.x, my_ch);
-            my_ch = mvinch(newPosition.y, newPosition.x);
-            my_map[newPosition.y - 3][newPosition.x] = charecter->symbol;
-            mvaddch(newPosition.y, newPosition.x, charecter->symbol);
-            charecter->position = newPosition;
-            charecter->gold += 1;
-            print_data(data_win, *charecter, level);
+            main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x] = my_ch;
+            mvaddch(main_game->hero.position.y + 3, main_game->hero.position.x, my_ch);
+            my_ch = main_game->floors[level].map[newPosition.y][newPosition.x];
+            main_game->floors[level].map[newPosition.y][newPosition.x] = main_game->hero.symbol;
+            mvaddch(newPosition.y + 3, newPosition.x, main_game->hero.symbol);
+            main_game->hero.position = newPosition;
+            main_game->hero.gold += 1;
+            //if(my_ch == '+') print_room(main_game, level);
+            //if(my_ch == '#') print_corridors(main_game, level);
+            if(my_ch == '+' || my_ch == '#')
+            {
+                //main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x] = my_ch;
+                update_map(main_game, level);
+                //main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x] = main_game->hero.symbol;
+                //mvaddch(main_game->hero.position.y + 3, main_game->hero.position.x, main_game->hero.symbol);
+            }
+            //update_fog(fog_window, main_game, level);
+            print_data(data_win, main_game->hero, level);
             print_message(msg_win, "You found a sword!");
             break;
         case ' ':
