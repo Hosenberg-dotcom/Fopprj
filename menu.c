@@ -1,6 +1,6 @@
 #include "headers.h"
 
-this_game_setups this_game_settings = {100, 1, '@'};
+this_game_setups this_game_settings = {100, 1, '@', "Guest\0"};
 
 void display_main_menu() {
     clear();

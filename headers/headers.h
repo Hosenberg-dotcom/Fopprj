@@ -27,6 +27,7 @@
 #define MAX_ROOM_SPELLS 1
 #define MAX_ROOM_GOLDS 4
 #define MAX_ROOM_TRAP 2
+#define MAX_PLAYER_NAME_LENGTH 30
 
 extern struct this_game_setups this_game_settings;
 
@@ -138,6 +139,7 @@ typedef struct this_game_setups{
     int difficulty;
     int hero_color;
     char hero_symbol;
+    char player_name[MAX_PLAYER_NAME_LENGTH];
 }this_game_setups;
 // Function prototypes
 void display_main_menu();
@@ -163,11 +165,12 @@ void init_queue(Queue* q);
 int is_empty(Queue* q);
 void enqueue(Queue* q, int x, int y);
 Point dequeue(Queue* q);
-void character_move(Character* charecter, char** my_map, MessageWindow* msg_win);
+void character_move(Character* charecter, char** my_map, MessageWindow* msg_win,MessageWindow* data_win, int level);
 void add_items_to_rooms(Floor* my_floor, int floor_index);
 MessageWindow* init_message_window(int width,int height, int y);
 void print_message(MessageWindow* msg_win, const char* msg);
 void destroy_message_window(MessageWindow* msg_win);
 Character creat_hero(int health, char symbol, int color, int gold, int food_count, int weapon_count, int spell_count);
+void print_data(MessageWindow* data_win, Character hero, int level);
 
 #endif

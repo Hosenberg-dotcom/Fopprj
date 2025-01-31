@@ -13,7 +13,7 @@ Character creat_hero(int health, char symbol, int color, int gold, int food_coun
     return hero;
 }
 
-void character_move(Character* charecter, char** my_map, MessageWindow* msg_win)
+void character_move(Character* charecter, char** my_map, MessageWindow* msg_win,MessageWindow* data_win, int level)
 {
     int ch;
     char my_ch = '.';
@@ -64,12 +64,14 @@ void character_move(Character* charecter, char** my_map, MessageWindow* msg_win)
             my_map[newPosition.y - 3][newPosition.x] = charecter->symbol;
             mvaddch(newPosition.y, newPosition.x, charecter->symbol);
             charecter->position = newPosition;
-            //print_message(msg_win, "You found a sword!");
+            charecter->gold += 1;
+            print_data(data_win, *charecter, level);
+            print_message(msg_win, "You found a sword!");
             break;
         case ' ':
         case '_':
         case '|':
-            //print_message(msg_win, "");
+            print_message(msg_win, "");
             break;
     }
     refresh();

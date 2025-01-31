@@ -25,7 +25,7 @@ void display_game() {
        
     }
     MessageWindow* msg_win = init_message_window(cols, rows + 6, 0);
-    MessageWindow* data_menu = init_message_window(cols, rows + 6, 1);
+    MessageWindow* data_win = init_message_window(cols, rows + 6, 1);
     main_game->hero = creat_hero(this_game_settings.difficulty, this_game_settings.hero_symbol, this_game_settings.hero_color, 0, this_game_settings.difficulty, 1, 0);
     int flag = 0;
     for(int i = 0; i < rows; i++)
@@ -39,7 +39,7 @@ void display_game() {
                 mvprintw(main_game->hero.position.y, main_game->hero.position.x, "%c", main_game->hero.symbol);
                 main_game->floors[0].map[main_game->hero.position.y - 3][main_game->hero.position.x] = main_game->hero.symbol;
                 refresh();
-                character_move(&(main_game->hero), main_game->floors[0].map, msg_win);
+                character_move(&(main_game->hero), main_game->floors[0].map, msg_win, data_win, 0);
                 flag = 1;
                 break;
             }
@@ -48,7 +48,7 @@ void display_game() {
         }
     }
     destroy_message_window(msg_win);
-    destroy_message_window(data_menu);
+    destroy_message_window(data_win);
     refresh();
     curs_set(0);
 
