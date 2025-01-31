@@ -1,4 +1,18 @@
 #include "headers.h"
+
+Character creat_hero(int health, char symbol, int color, int gold, int food_count, int weapon_count, int spell_count)
+{
+    Character hero;
+    hero.color = color;
+    hero.food_count = food_count;
+    hero.gold = gold;
+    hero.health = health;
+    hero.spell_count =spell_count;
+    hero.symbol = symbol;
+    hero.weapon_count = weapon_count;
+    return hero;
+}
+
 void character_move(Character* charecter, char** my_map, MessageWindow* msg_win)
 {
     int ch;

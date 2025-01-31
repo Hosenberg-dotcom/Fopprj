@@ -1,5 +1,7 @@
 #include "headers.h"
 
+this_game_setups this_game_settings = {100, 1, '@'};
+
 void display_main_menu() {
     clear();
     refresh();
@@ -7,7 +9,7 @@ void display_main_menu() {
     int rows, cols;
     noecho();
     getmaxyx(stdscr, rows, cols);
-
+   
     const char *options[] = {
         "Enter as a Guest",
         "Log in",
@@ -520,18 +522,22 @@ void set_difficulty() {
             case '\n': // Enter key
                 switch (highlight) {
                     case 0:
+                        this_game_settings.difficulty = 100;
                         delwin(settings_win);
                         settings_menu();
                         return;
                     case 1:
+                        this_game_settings.difficulty = 80;
                         delwin(settings_win);
                         settings_menu();
                         return;
                     case 2:
+                        this_game_settings.difficulty = 60;
                         delwin(settings_win);
                         settings_menu();
                         return;
                     case 3:
+                        this_game_settings.difficulty = 40;
                         delwin(settings_win);
                         settings_menu();
                         return;
@@ -610,18 +616,22 @@ void change_character_color() {
             case '\n': // Enter key
                 switch (highlight) {
                     case 0:
+                        this_game_settings.hero_color = 1;
                         delwin(settings_win);
                         settings_menu();
                         return;
                     case 1:
+                        this_game_settings.hero_color = 2;
                         delwin(settings_win);
                         settings_menu();
                         return;
                     case 2:
+                        this_game_settings.hero_color = 3;
                         delwin(settings_win);
                         settings_menu();
                         return;
                     case 3:
+                        this_game_settings.hero_color = 4;
                         delwin(settings_win);
                         settings_menu();
                         return;
@@ -742,7 +752,7 @@ void choose_hero() {
         "Zakani(@)",
         "Jalili(&)",
         "Poormahammadi($)",
-        "Dr.Pezeshkian(~)",
+        "Dr.Pezeshkian(%)",
         "Back to Main Menu"
     };
     int n_options = sizeof(options) / sizeof(options[0]);
@@ -790,18 +800,22 @@ void choose_hero() {
             case '\n': // Enter key
                 switch (highlight) {
                     case 0:
+                        this_game_settings.hero_symbol = '@'; 
                         delwin(settings_win);
                         settings_menu();
                         return;
                     case 1:
+                        this_game_settings.hero_symbol = '&';
                         delwin(settings_win);
                         settings_menu();
                         return;
                     case 2:
+                        this_game_settings.hero_symbol = '$';
                         delwin(settings_win);
                         settings_menu();
                         return;
                     case 3:
+                        this_game_settings.hero_symbol = '%';
                         delwin(settings_win);
                         settings_menu();
                         return;

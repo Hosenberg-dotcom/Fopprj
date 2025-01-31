@@ -28,6 +28,8 @@
 #define MAX_ROOM_GOLDS 4
 #define MAX_ROOM_TRAP 2
 
+extern struct this_game_setups this_game_settings;
+
 typedef struct Point{
     int x, y;
 } Point;
@@ -78,9 +80,13 @@ typedef struct Character{
     char symbol;
     int health;
     int color;
+    int gold;
     Food my_foods[MAX_FOOD];
+    int food_count;
     Weapons my_weapons[MAX_WEAPONS];
+    int weapon_count;
     Spell my_spells[MAX_SPELLS];
+    int spell_count;
 } Character;
 
 typedef struct Room{
@@ -113,7 +119,7 @@ typedef struct Floor{
 
 typedef struct Game{
     Floor floors[4];
-    int gold; 
+    Character hero;
 } Game;
 
 typedef struct Queue{
@@ -121,12 +127,18 @@ typedef struct Queue{
     int front, rear;
 } Queue;
 
-typedef struct {
+typedef struct MessageWindow{
     int width;
     int screen_height;
     int type;
     WINDOW* win;
 } MessageWindow;
+
+typedef struct this_game_setups{
+    int difficulty;
+    int hero_color;
+    char hero_symbol;
+}this_game_setups;
 // Function prototypes
 void display_main_menu();
 void guest_menu();
@@ -156,5 +168,6 @@ void add_items_to_rooms(Floor* my_floor, int floor_index);
 MessageWindow* init_message_window(int width,int height, int y);
 void print_message(MessageWindow* msg_win, const char* msg);
 void destroy_message_window(MessageWindow* msg_win);
+Character creat_hero(int health, char symbol, int color, int gold, int food_count, int weapon_count, int spell_count);
 
 #endif
