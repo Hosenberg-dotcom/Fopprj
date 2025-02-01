@@ -12,6 +12,9 @@
 #include <time.h>
 #include <wchar.h>
 #include <locale.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#include <pthread.h>
 
 #define MAX_QUEUE_SIZE 1000
 #define MAX_ITEMS 10
@@ -30,6 +33,9 @@
 #define MAX_PLAYER_NAME_LENGTH 30
 
 extern struct this_game_setups this_game_settings;
+extern pthread_t music_thread;  
+extern Mix_Music *current_music;
+extern int music_playing;
 
 typedef struct Point{
     int x, y;
@@ -181,6 +187,10 @@ void update_map(Game* main_game, int level);
 int check_item(int* perv_y, int* perv_x, int perv_Index, int y, int x);
 void check_and_pick_item(Game* main_game, int level, MessageWindow* msg_win);
 int check_for_trap(Game* main_game, int level, MessageWindow* msg_win);
-
+void *play_music_background(void *arg);
+void *play_music_background(void *arg);
+void start_music(const char *music_file);
+void stop_music();
+//void exit_game();
 
 #endif

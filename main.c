@@ -15,6 +15,8 @@ int main() {
     display_main_menu();
 
     // End ncurses mode
+    //void exit_game();
+    stop_music();
     endwin();
     return 0;
 }

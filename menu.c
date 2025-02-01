@@ -651,7 +651,7 @@ void change_character_color() {
     delwin(settings_win);
 }
 
-void select_music(WINDOW *parent_win) {
+void select_music() {
     curs_set(0);
     clear();
     refresh();
@@ -659,9 +659,9 @@ void select_music(WINDOW *parent_win) {
     getmaxyx(stdscr, rows, cols);
 
     const char *options[] = {
-        "Track1",
-        "Track2",
-        "Track3",
+        "Track1.mp3",
+        "Track2.mp3",
+        "Track3.mp3",
         "Mute",
         "Back to Main Menu"
     };
@@ -710,20 +710,24 @@ void select_music(WINDOW *parent_win) {
             case '\n': // Enter key
                 switch (highlight) {
                     case 0:
+                        start_music(options[0]);
                         delwin(settings_win);
-                        settings_menu();
+                        select_music();
                         return;
                     case 1:
+                        start_music(options[1]);
                         delwin(settings_win);
-                        settings_menu();
+                        select_music();
                         return;
                     case 2:
+                        start_music(options[2]);
                         delwin(settings_win);
-                        settings_menu();
+                        select_music();
                         return;
                     case 3:
                         delwin(settings_win);
-                        settings_menu();
+                        stop_music();
+                        select_music();
                         return;
                     case 4:
                         delwin(settings_win);
