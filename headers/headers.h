@@ -178,5 +178,6 @@ void print_room(Game* main_game, int level);
 void print_corridors(Game* main_game, int level);
 void toggle_map_display(Game* main_game, int level);
 void update_map(Game* main_game, int level);
+int check_item(int* perv_y, int* perv_x, int perv_Index, int y, int x);
 
 #endif

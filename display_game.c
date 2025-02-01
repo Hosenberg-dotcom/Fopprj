@@ -28,6 +28,13 @@ void display_game() {
     
     int random_room_index = (rand() % main_game->floors[0].room_count);
     Room* random_room = &(main_game->floors[0].rooms[random_room_index]);
+    /*if(random_room->monster_count)
+    {
+        main_game->floors[0].map[random_room->monster[0].position->y][random_room->monster[0].position->x] = '.';
+        random_room->monster_count = 0;
+        free(random_room->monster->position);
+        random_room->monster->position = NULL;
+    }*/
 
 
     int x, y;

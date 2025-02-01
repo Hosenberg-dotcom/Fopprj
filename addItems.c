@@ -1,6 +1,5 @@
 #include "headers.h"
 
-//مشکل داره هم رندوم بودنش خوب نیست هم آندد نداره
 void add_items_to_rooms(Floor* my_floor, int floor_index) {
     for (int i = 0; i < my_floor->room_count; i++) {
         Room* room = &my_floor->rooms[i];
@@ -43,8 +42,22 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
             room->trap_count = MAX_ROOM_TRAP;
         }
 
+        int perv_x[100];
+        int perv_y[100];
+        int perv_Index = 0;
+        int x = -2;
+        int y = -2;
+
         // قرار دادن آیتم‌ها در مکان‌های تصادفی داخل اتاق
         for (int j = 0; j < room->food_count; j++) {
+            do
+            {
+                x = room->position.x + (rand() % (room->width - 2)) + 1;
+                y = room->position.y + (rand() % (room->height - 2)) + 1;
+            } while (!check_item(perv_y, perv_x, perv_Index, y, x));
+            perv_x[perv_Index] = x;
+            perv_y[perv_Index] = y;
+            perv_Index++;
             int chance = rand() % 10 >= 5;
             if(chance >= 5)
             {
@@ -70,13 +83,21 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
                 room->room_foods[j].power_raise = 1;
                 room->room_foods[j].speed_raise = 0;
             }
-            room->room_foods[j].position.x = room->position.x + (rand() % (room->width - 2)) + 1;
-            room->room_foods[j].position.y = room->position.y + (rand() % (room->height - 2)) + 1;
+            room->room_foods[j].position.x = x;
+            room->room_foods[j].position.y = y;
             room->room_foods[j].symbol = 'F';
             my_floor->map[room->room_foods[j].position.y][room->room_foods[j].position.x] = 'F';
         }
 
         for (int j = 0; j < room->weapon_count; j++) {
+            do
+            {
+                x = room->position.x + (rand() % (room->width - 2)) + 1;
+                y = room->position.y + (rand() % (room->height - 2)) + 1;
+            } while (!check_item(perv_y, perv_x, perv_Index, y, x));
+            perv_x[perv_Index] = x;
+            perv_y[perv_Index] = y;
+            perv_Index++;
             int chance = rand() % 10;
             switch(chance)
             {
@@ -119,12 +140,20 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
                     room->room_weapons[j].type = 3;
                     break;
             }
-            room->room_weapons[j].position.x = room->position.x + (rand() % (room->width - 2)) + 1;
-            room->room_weapons[j].position.y = room->position.y + (rand() % (room->height - 2)) + 1;
+            room->room_weapons[j].position.x = x;
+            room->room_weapons[j].position.y = y;
             my_floor->map[room->room_weapons[j].position.y][room->room_weapons[j].position.x] = room->room_weapons[j].symbol;
         }
 
         for (int j = 0; j < room->spell_count; j++) {
+            do
+            {
+                x = room->position.x + (rand() % (room->width - 2)) + 1;
+                y = room->position.y + (rand() % (room->height - 2)) + 1;
+            } while (!check_item(perv_y, perv_x, perv_Index, y, x));
+            perv_x[perv_Index] = x;
+            perv_y[perv_Index] = y;
+            perv_Index++;
             int chance = rand() % 3;
             switch(chance)
             {
@@ -138,14 +167,22 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
                     room->room_spells[j].type = 2;
                     break;
             }
-            room->room_spells[j].position.x = room->position.x + (rand() % (room->width - 2)) + 1;
-            room->room_spells[j].position.y = room->position.y + (rand() % (room->height - 2)) + 1;
+            room->room_spells[j].position.x = x;
+            room->room_spells[j].position.y = y;
             room->room_spells[j].symbol = 'P';
             my_floor->map[room->room_spells[j].position.y][room->room_spells[j].position.x] = 'P';
             room->room_spells[j].time_left = 10;
         }
 
         for (int j = 0; j < room->gold_count; j++) {
+            do
+            {
+                x = room->position.x + (rand() % (room->width - 2)) + 1;
+                y = room->position.y + (rand() % (room->height - 2)) + 1;
+            } while (!check_item(perv_y, perv_x, perv_Index, y, x));
+            perv_x[perv_Index] = x;
+            perv_y[perv_Index] = y;
+            perv_Index++;
             int chance = rand() % 10;
             switch(chance)
             {
@@ -156,20 +193,37 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
                     room->golds[j].type = 1;
                     break;
             }
-            room->golds[j].position.x = room->position.x + (rand() % (room->width - 2)) + 1;
-            room->golds[j].position.y = room->position.y + (rand() % (room->height - 2)) + 1;
+            room->golds[j].position.x = x;
+            room->golds[j].position.y = y;
             room->golds[j].symbol = 'L';
             my_floor->map[room->golds[j].position.y][room->golds[j].position.x] = 'L';
         }
 
         for (int j = 0; j < room->trap_count; j++) {
-            room->trap_position[j].x = room->position.x + (rand() % (room->width - 2)) + 1;
-            room->trap_position[j].y = room->position.y + (rand() % (room->height - 2)) + 1;
+            do
+            {
+                x = room->position.x + (rand() % (room->width - 2)) + 1;
+                y = room->position.y + (rand() % (room->height - 2)) + 1;
+            } while (!check_item(perv_y, perv_x, perv_Index, y, x));
+            perv_x[perv_Index] = x;
+            perv_y[perv_Index] = y;
+            perv_Index++;
+            room->trap_position[j].x = x;
+            room->trap_position[j].y = y;
             //my_floor->map[room->trap_position[j].y][room->trap_position[j].x] = 'T';
         }
 
         if (room->type != 1) { 
             for (int j = 0; j < room->monster_count; j++) {
+                do
+                {
+                    x = room->position.x + (rand() % (room->width - 2)) + 1;
+                    y = room->position.y + (rand() % (room->height - 2)) + 1;
+                } while (!check_item(perv_y, perv_x, perv_Index, y, x));
+                perv_x[perv_Index] = x;
+                perv_y[perv_Index] = y;
+                perv_Index++;
+                
                 if(room->monster[j].type == 2)
                 {
                     room->monster[j].type = 4;
@@ -214,10 +268,23 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
                     }
                 }
                 room->monster[j].position = malloc(sizeof(Point));
-                room->monster[j].position->x = room->position.x + (rand() % (room->width - 2)) + 1;
-                room->monster[j].position->y = room->position.y + (rand() % (room->height - 2)) + 1;
+                room->monster[j].position->x = x;
+                room->monster[j].position->y = y;
                 my_floor->map[room->monster[j].position->y][room->monster[j].position->x] = room->monster[j].symbol;
             }
         }
     }
+}
+
+int check_item(int* perv_y, int* perv_x, int perv_Index, int y, int x) {
+    int flag = -1;
+    for(int i = 0; i < perv_Index; i++)
+    {
+        if(perv_x[i] == x && perv_y[i] == y)
+        {
+            flag++;
+            break;
+        }
+    }
+    return flag;
 }
