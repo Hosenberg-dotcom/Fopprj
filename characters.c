@@ -21,8 +21,9 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
     char my_ch = '.';
     Point newPosition;
     int flag;
+    int break_point = 1;
     print_data(data_win, main_game->hero, level);
-    while((ch = getch()) != 'q')
+    while(break_point && ((ch = getch()) != 'q'))
     {
         print_message(msg_win, "");
         flag = 0;
@@ -102,6 +103,19 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
             main_game->hero.health -= 2;
             print_data(data_win, main_game->hero, level);
             break;
+        case '<':
+            if(level < 3){
+                clear();
+                refresh();
+                break_point = 0;
+                make_floor(main_game, level + 1, msg_win, data_win);
+            }
+            else{
+                clear();
+                refresh();
+                //create_treasure_room();
+            }
+                break;
         case ' ':
         case '_':
         case '|':

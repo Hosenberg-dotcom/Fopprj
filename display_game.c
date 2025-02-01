@@ -62,10 +62,10 @@ void make_floor(Game* main_game, int level, MessageWindow* msg_win, MessageWindo
 
     main_game->floors[level].stairs_position.x = a;
     main_game->floors[level].stairs_position.y = b;
+    main_game->floors[level].map[b][a] = '<';
     main_game->hero.position.x = x;
     main_game->hero.position.y = y;
     main_game->floors[level].map[y][x] = main_game->hero.symbol;
-    main_game->floors[level].map[b][a] = '<';
     print_room(main_game, level);
     refresh();
     character_move(main_game, msg_win, data_win, level);
