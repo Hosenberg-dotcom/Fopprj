@@ -72,7 +72,7 @@ typedef struct Monsters{
     char symbol;
     int health;
     int damage;
-    int move_type;
+    int move_left;
     Point* position;
 }Monsters;
 
@@ -192,6 +192,12 @@ void *play_music_background(void *arg);
 void start_music(const char *music_file);
 void stop_music();
 void make_floor(Game* main_game, int level, MessageWindow* msg_win, MessageWindow* data_win);
+int how_much_monster_nearby(Game* main_game, int level);
+void monster_attack(Game *main_game, int level, MessageWindow *msg_win, int monster_near);
+void monster_chase(Game *main_game, int level, int room_index);
+int is_in_monster_room(Game *main_game, int level);
+int pass_finding(Point* start, Point* destination, Game* main_game, int level);
+
 //void exit_game();
 
 #endif

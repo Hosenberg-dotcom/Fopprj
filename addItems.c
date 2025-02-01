@@ -234,7 +234,7 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
                     room->monster[j].type = 4;
                     room->monster[j].damage = 30;
                     room->monster[j].health = 30;
-                    room->monster[j].move_type = 1;
+                    room->monster[j].move_left = 10;
                     room->monster[j].symbol = 'U';
                 }
                 else
@@ -246,28 +246,28 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
                             room->monster[j].type = 0;
                             room->monster[j].damage = 5;
                             room->monster[j].health = 5;
-                            room->monster[j].move_type = 0;
+                            room->monster[j].move_left = 5;
                             room->monster[j].symbol = 'D';
                             break;
                         case 1:
                             room->monster[j].type = 1;
                             room->monster[j].damage = 10;
                             room->monster[j].health = 10;
-                            room->monster[j].move_type = 0;
+                            room->monster[j].move_left = 8;
                             room->monster[j].symbol = 'F';
                             break;
                         case 2:
                             room->monster[j].type = 2;
                             room->monster[j].damage = 15;
                             room->monster[j].health = 15;
-                            room->monster[j].move_type = 1;
+                            room->monster[j].move_left = 15;
                             room->monster[j].symbol = 'G';
                             break;
                         case 3:
                             room->monster[j].type = 3;
                             room->monster[j].damage = 20;
                             room->monster[j].health = 20;
-                            room->monster[j].move_type = 2;
+                            room->monster[j].move_left = 10000;
                             room->monster[j].symbol = 'S';
                             break;
                     }

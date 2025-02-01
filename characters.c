@@ -22,6 +22,8 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
     Point newPosition;
     int flag;
     int break_point = 1;
+    int monster_counter;
+    int room_index;
     print_data(data_win, main_game->hero, level);
     while(break_point && ((ch = getch()) != 'q'))
     {
@@ -91,8 +93,21 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
             {
                 update_map(main_game, level);
             }
-            main_game->hero.health -= 1;
-            print_data(data_win, main_game->hero, level);
+            /*بازی هیولا*/
+            room_index = is_in_monster_room(main_game, level);
+            monster_counter = how_much_monster_nearby(main_game, level);
+            if(monster_counter)
+            {
+                monster_attack(main_game, level, msg_win, monster_counter);
+                /*if(room_index)
+                    monster_chase(main_game, level, room_index - 1);*/
+            }
+            else
+            {
+                if(room_index)
+                    monster_chase(main_game, level, room_index - 1);
+            }
+            /**/
             break;
         case 'O': case 'A': case 'R': case 'C': case 'W': case 'P': case 'L':
             Point temp = main_game->hero.position;
@@ -100,8 +115,21 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
             check_and_pick_item(main_game, level, msg_win);
             mvaddch(newPosition.y + 3, newPosition.x, main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x]);
             main_game->hero.position = temp;
-            main_game->hero.health -= 2;
-            print_data(data_win, main_game->hero, level);
+            /*بازی هیولا*/
+            room_index = is_in_monster_room(main_game, level);
+            monster_counter = how_much_monster_nearby(main_game, level);
+            if(monster_counter)
+            {
+                monster_attack(main_game, level, msg_win, monster_counter);
+                if(room_index)
+                    monster_chase(main_game, level, room_index - 1);
+            }
+            else
+            {
+                if(room_index)
+                    monster_chase(main_game, level, room_index - 1);
+            }
+            /**/
             break;
         case '<':
             if(level < 3){
@@ -122,6 +150,7 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
             print_message(msg_win, "");
             break;
     }
+    print_data(data_win, main_game->hero, level);
     refresh();
     }
     

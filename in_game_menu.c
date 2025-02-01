@@ -35,7 +35,7 @@ void print_message(MessageWindow* msg_win, const char* msg) {
     box(msg_win->win, 0, 0);  // کشیدن کادر دور `window`
     wattroff(msg_win->win, COLOR_PAIR(1));
     if (msg && strlen(msg) > 0) {  
-        mvwprintw(msg_win->win, 1, msg_win->width / 2, "%s", msg);  // نمایش پیام در `window`
+        mvwprintw(msg_win->win, 1, (msg_win->width - strlen(msg)) / 2, "%s", msg);  // نمایش پیام در `window`
     }
 
     wrefresh(msg_win->win);  // به‌روزرسانی `window`
