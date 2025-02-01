@@ -25,34 +25,48 @@ void display_game() {
 
     main_game->hero = creat_hero(this_game_settings.difficulty, this_game_settings.hero_symbol, this_game_settings.hero_color, 0, this_game_settings.difficulty, 1, 0);
 
-    
-    int random_room_index = (rand() % main_game->floors[0].room_count);
-    Room* random_room = &(main_game->floors[0].rooms[random_room_index]);
-    /*if(random_room->monster_count)
-    {
-        main_game->floors[0].map[random_room->monster[0].position->y][random_room->monster[0].position->x] = '.';
-        random_room->monster_count = 0;
-        free(random_room->monster->position);
-        random_room->monster->position = NULL;
-    }*/
-
-
-    int x, y;
-    do {
-        x = random_room->position.x + (rand() % (random_room->width - 2)) + 1;
-        y = random_room->position.y + (rand() % (random_room->height - 2)) + 1;
-    } while (main_game->floors[0].map[y][x] != '.');  // تا زمانی که نقطه خالی پیدا شود
-
-    main_game->hero.position.x = x;
-    main_game->hero.position.y = y;
-    main_game->floors[0].map[y][x] = main_game->hero.symbol;
-    print_room(main_game, 0);
-    refresh();
-    character_move(main_game, msg_win, data_win, 0);
+    make_floor(main_game, 0, msg_win, data_win);
 
     destroy_message_window(msg_win);
     destroy_message_window(data_win);
     refresh();
     curs_set(0);
     display_main_menu();
+}
+
+void make_floor(Game* main_game, int level, MessageWindow* msg_win, MessageWindow* data_win)
+{
+    int random_room_index = (rand() % main_game->floors[level].room_count);
+    Room* random_room = &(main_game->floors[level].rooms[random_room_index]);
+    int random_room_index2;
+    do
+    {
+        random_room_index2 = (rand() % main_game->floors[level].room_count);
+    } while (random_room_index2 == random_room_index);
+    
+    Room* random_room2 = &(main_game->floors[level].rooms[random_room_index2]);
+    
+
+
+    int x, y;
+    do {
+        x = random_room->position.x + (rand() % (random_room->width - 2)) + 1;
+        y = random_room->position.y + (rand() % (random_room->height - 2)) + 1;
+    } while (main_game->floors[level].map[y][x] != '.');  // تا زمانی که نقطه خالی پیدا شود
+
+    int a, b;
+    do {
+        a = random_room2->position.x + (rand() % (random_room2->width - 2)) + 1;
+        b = random_room2->position.y + (rand() % (random_room2->height - 2)) + 1;
+    } while (main_game->floors[level].map[b][a] != '.');
+
+    main_game->floors[level].stairs_position.x = a;
+    main_game->floors[level].stairs_position.y = b;
+    main_game->hero.position.x = x;
+    main_game->hero.position.y = y;
+    main_game->floors[level].map[y][x] = main_game->hero.symbol;
+    main_game->floors[level].map[b][a] = '<';
+    print_room(main_game, level);
+    refresh();
+    character_move(main_game, msg_win, data_win, level);
 }

@@ -191,6 +191,7 @@ void *play_music_background(void *arg);
 void *play_music_background(void *arg);
 void start_music(const char *music_file);
 void stop_music();
+void make_floor(Game* main_game, int level, MessageWindow* msg_win, MessageWindow* data_win);
 //void exit_game();
 
 #endif
