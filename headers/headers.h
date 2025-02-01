@@ -179,5 +179,7 @@ void print_corridors(Game* main_game, int level);
 void toggle_map_display(Game* main_game, int level);
 void update_map(Game* main_game, int level);
 int check_item(int* perv_y, int* perv_x, int perv_Index, int y, int x);
+void check_and_pick_item(Game* main_game, int level, MessageWindow* msg_win);
+
 
 #endif

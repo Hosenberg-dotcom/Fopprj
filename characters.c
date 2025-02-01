@@ -21,6 +21,7 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
     char my_ch = '.';
     Point newPosition;
     int flag;
+    print_data(data_win, main_game->hero, level);
     while((ch = getch()) != 'q')
     {
         flag = 0;
@@ -74,19 +75,21 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
             main_game->floors[level].map[newPosition.y][newPosition.x] = main_game->hero.symbol;
             mvaddch(newPosition.y + 3, newPosition.x, main_game->hero.symbol);
             main_game->hero.position = newPosition;
-            main_game->hero.gold += 1;
-            //if(my_ch == '+') print_room(main_game, level);
-            //if(my_ch == '#') print_corridors(main_game, level);
             if(my_ch == '+' || my_ch == '#')
             {
-                //main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x] = my_ch;
                 update_map(main_game, level);
-                //main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x] = main_game->hero.symbol;
-                //mvaddch(main_game->hero.position.y + 3, main_game->hero.position.x, main_game->hero.symbol);
             }
-            //update_fog(fog_window, main_game, level);
+            main_game->hero.health -= 1;
             print_data(data_win, main_game->hero, level);
-            print_message(msg_win, "You found a sword!");
+            break;
+        case 'O': case 'A': case 'R': case 'C': case 'W': case 'P': case 'L':
+            Point temp = main_game->hero.position;
+            main_game->hero.position = newPosition;
+            check_and_pick_item(main_game, level, msg_win);
+            mvaddch(newPosition.y + 3, newPosition.x, main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x]);
+            main_game->hero.position = temp;
+            main_game->hero.health -= 2;
+            print_data(data_win, main_game->hero, level);
             break;
         case ' ':
         case '_':

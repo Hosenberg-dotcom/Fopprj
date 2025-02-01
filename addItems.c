@@ -64,29 +64,33 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
                 room->room_foods[j].health_care = 10;
                 room->room_foods[j].power_raise = 0;
                 room->room_foods[j].speed_raise = 0;
+                room->room_foods[j].type = 0;
             }
             else if(chance >= 3)
             {
                 room->room_foods[j].health_care = -10;
                 room->room_foods[j].power_raise = 0;
                 room->room_foods[j].speed_raise = 0;
+                room->room_foods[j].type = 1;
             }
             else if(chance >= 1)
             {
                 room->room_foods[j].health_care = 10;
                 room->room_foods[j].power_raise = 0;
                 room->room_foods[j].speed_raise = 1;
+                room->room_foods[j].type = 2;
             }
             else if(chance == 0)
             {
                 room->room_foods[j].health_care = 10;
                 room->room_foods[j].power_raise = 1;
                 room->room_foods[j].speed_raise = 0;
+                room->room_foods[j].type = 3;
             }
             room->room_foods[j].position.x = x;
             room->room_foods[j].position.y = y;
-            room->room_foods[j].symbol = 'F';
-            my_floor->map[room->room_foods[j].position.y][room->room_foods[j].position.x] = 'F';
+            room->room_foods[j].symbol = 'O';
+            my_floor->map[room->room_foods[j].position.y][room->room_foods[j].position.x] = 'O';
         }
 
         for (int j = 0; j < room->weapon_count; j++) {
@@ -167,6 +171,7 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
                     room->room_spells[j].type = 2;
                     break;
             }
+            room->room_spells[j].time_left = 10;
             room->room_spells[j].position.x = x;
             room->room_spells[j].position.y = y;
             room->room_spells[j].symbol = 'P';
