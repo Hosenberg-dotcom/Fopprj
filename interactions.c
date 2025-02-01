@@ -120,52 +120,41 @@ void check_and_pick_item(Game* main_game, int level, MessageWindow* msg_win) {
     }
 }
 
-/*void character_move(Game* main_game, MessageWindow* msg_win, MessageWindow* data_win, int level)
-{
-    int ch;
-    char my_ch = '.';
-    Point newPosition;
-    int flag;
-    while ((ch = getch()) != 'q') {
-        flag = 0;
-        newPosition = main_game->hero.position;
-        switch (ch) {
-            case '8': newPosition.y--; break;
-            case '2': newPosition.y++; break;
-            case '4': newPosition.x--; break;
-            case '6': newPosition.x++; break;
-            case '7': newPosition.y--; newPosition.x--; break;
-            case '9': newPosition.y--; newPosition.x++; break;
-            case '1': newPosition.y++; newPosition.x--; break;
-            case '3': newPosition.y++; newPosition.x++; break;
-            case 'm':
-                flag = 1;
-                toggle_map_display(main_game, level);
-                break;
-        }
-        if (flag) continue;
+int check_for_trap(Game* main_game, int level, MessageWindow* msg_win) {
+    Floor* current_floor = &main_game->floors[level];
+    Room* current_room = NULL;
+    Character* hero = &main_game->hero;
 
-        switch (main_game->floors[level].map[newPosition.y][newPosition.x]) {
-            case '+': case '.': case '#':
-                main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x] = my_ch;
-                mvaddch(main_game->hero.position.y + 3, main_game->hero.position.x, my_ch);
-                my_ch = mvinch(newPosition.y + 3, newPosition.x);
-                main_game->floors[level].map[newPosition.y][newPosition.x] = main_game->hero.symbol;
-                mvaddch(newPosition.y + 3, newPosition.x, main_game->hero.symbol);
-                main_game->hero.position = newPosition;
-                main_game->hero.gold += 1;
-                if (my_ch == '+' || my_ch == '#')
-                    update_map(main_game, level);
-                
-                check_and_pick_item(main_game, level, msg_win);
-
-                print_data(data_win, main_game->hero, level);
-                print_message(msg_win, "You found a sword!");
-                break;
-            case ' ': case '_': case '|':
-                print_message(msg_win, "");
-                break;
+    // پیدا کردن اتاقی که بازیکن داخل آن قرار دارد
+    for (int i = 0; i < current_floor->room_count; i++) {
+        Room* room = &current_floor->rooms[i];
+        if (hero->position.x >= room->position.x && hero->position.x < room->position.x + room->width &&
+            hero->position.y >= room->position.y && hero->position.y < room->position.y + room->height) {
+            current_room = room;
+            break;
         }
-        refresh();
     }
-}*/
+    
+    if (!current_room) return 0; // اگر بازیکن در هیچ اتاقی نبود، تابع را ترک کن
+
+    // بررسی موقعیت تله‌ها
+    for (int i = 0; i < current_room->trap_count; i++) {
+        if (current_room->trap_position[i].x == hero->position.x &&
+            current_room->trap_position[i].y == hero->position.y) {
+            
+            for (int j = i; j < current_room->trap_count - 1; j++) {
+                    current_room->trap_position[j] = current_room->trap_position[j + 1];
+                }
+                current_room->trap_count--;
+            // نمایش پیام و کاهش سلامتی بازیکن
+            print_message(msg_win, "You stepped on a trap!");
+            hero->health -= 10;  // کم کردن 10 واحد سلامتی
+            
+            // تغییر نمایش تله روی نقشه
+            current_floor->map[hero->position.y][hero->position.x] = '^';
+            
+            return 1;
+        }
+    }
+    return 0;
+}

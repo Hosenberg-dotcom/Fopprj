@@ -24,6 +24,7 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
     print_data(data_win, main_game->hero, level);
     while((ch = getch()) != 'q')
     {
+        print_message(msg_win, "");
         flag = 0;
         newPosition = main_game->hero.position;
         switch (ch) {
@@ -69,6 +70,16 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
         case '+':
         case '.':
         case '#':
+            Point temp1 = main_game->hero.position;
+            main_game->hero.position = newPosition;
+            if(check_for_trap(main_game, level, msg_win))
+            {
+                mvaddch(newPosition.y + 3, newPosition.x, main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x]);
+                main_game->hero.position = temp1;
+                print_data(data_win, main_game->hero, level);
+                break;
+            }
+            main_game->hero.position = temp1;
             main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x] = my_ch;
             mvaddch(main_game->hero.position.y + 3, main_game->hero.position.x, my_ch);
             my_ch = main_game->floors[level].map[newPosition.y][newPosition.x];
