@@ -258,7 +258,10 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
             else{
                 clear();
                 refresh();
-                //create_treasure_room();
+                getch();
+                getch();
+                level = 4;
+                create_treasure_room(main_game->floors[1].height + 6, main_game->floors[1].width, main_game);
             }
                 break;
         case ' ':

@@ -19,7 +19,7 @@
 #define MAX_QUEUE_SIZE 1000
 #define MAX_ITEMS 10
 #define MAX_ROOMS 50
-#define MAX_FLOORS 4
+#define MAX_FLOORS 5
 #define MAX_ROOM_MONSTERS 2
 #define MAX_ROOM_DOORS 4
 #define MAX_FOOD 200
@@ -132,9 +132,22 @@ typedef struct Floor{
     int show_full_map;
 } Floor;
 
+/*typedef struct Treasur_room{
+    Point position;
+    int width, height;
+    Monsters monster[5];
+    int monster_count;
+    GoldType golds[5];
+    int gold_count;
+    Point trap_position[5];
+    int trap_count;
+    char** map;
+}Treasur_room;*/
+
 typedef struct Game{
     Floor floors[4];
     Character hero;
+    //Room treaser_room;
 } Game;
 
 typedef struct Queue{
@@ -215,6 +228,7 @@ void check_projectile_hit(Game* main_game, int level, int dy, int dx, MessageWin
 void remove_weapon_if_empty(Character* hero, MessageWindow* msg_win);
 void find_and_put_down_weapon(Game* main_game, int level, Point position, MessageWindow* msg_win);
 void hit_monster(Game* main_game, int level, MessageWindow* msg_win, Point position);
+void create_treasure_room(int height, int width, Game* main_game);
 
 
 #endif
