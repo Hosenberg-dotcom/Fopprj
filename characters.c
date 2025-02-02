@@ -65,6 +65,75 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
                 flag = 1;
                 toggle_map_display(main_game, level);
                 break;
+            case 'i':
+                show_combined_item_menu(main_game);
+                flag = 1;
+                break;
+            case 'f':
+        char direction = getch();
+        switch (direction) {
+            
+            case '8':
+                newPosition.y--;
+                break;
+            case '2':
+                newPosition.y++;
+                break;
+            case '4':
+               newPosition.x--;
+                break;
+            
+            case '6':
+                newPosition.x++;
+                break;
+            case '7': 
+                newPosition.y--;
+                newPosition.x--;
+                break;
+            case '9': 
+                newPosition.y--;
+                newPosition.x++;
+                break;
+            case '1':
+                newPosition.y++;
+                newPosition.x--;
+                break;
+            case '3':
+                newPosition.y++;
+                newPosition.x++;
+                break;
+        }
+        char next_step = main_game->floors[level].map[newPosition.y][newPosition.x];
+        int dx = newPosition.x - main_game->hero.position.x;
+        int dy = newPosition.y - main_game->hero.position.y;
+                while((next_step == '.') || (next_step == '+') || (next_step == '#'))
+                {
+                    Point temp1 = main_game->hero.position;
+                    main_game->hero.position = newPosition;
+                    if(check_for_trap(main_game, level, msg_win))
+                    {
+                        mvaddch(newPosition.y + 3, newPosition.x, main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x]);
+                        main_game->hero.position = temp1;
+                        print_data(data_win, main_game->hero, level);
+                        break;
+                    }
+                    main_game->hero.position = temp1;
+                    main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x] = my_ch;
+                    mvaddch(main_game->hero.position.y + 3, main_game->hero.position.x, my_ch);
+                    my_ch = main_game->floors[level].map[newPosition.y][newPosition.x];
+                    main_game->floors[level].map[newPosition.y][newPosition.x] = main_game->hero.symbol;
+                    mvaddch(newPosition.y + 3, newPosition.x, main_game->hero.symbol);
+                    main_game->hero.position = newPosition;
+                    if(my_ch == '+' || my_ch == '#')
+                    {
+                        update_map(main_game, level);
+                    }
+                    newPosition.x += dx;
+                    newPosition.y += dy;
+                    next_step = main_game->floors[level].map[newPosition.y][newPosition.x];
+                }
+        flag = 1;
+        break;
     }
     if(flag)
         continue;
