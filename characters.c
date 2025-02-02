@@ -4,14 +4,34 @@ Character creat_hero(int health, char symbol, int color, int gold, int food_coun
 {
     Character hero;
     hero.color = color;
-    hero.food_count = food_count;
+    hero.food_count = food_count / 10;
+    for(int i = 0; i < food_count / 10; i++)
+    {
+        hero.my_foods[i].type = 0;
+        hero.my_foods[i].health_care = 10;
+        hero.my_foods[i].power_raise = 0;
+        hero.my_foods[i].speed_raise = 0;
+        hero.my_foods[i].symbol = 'O';
+    }
     hero.gold = gold;
     hero.position.x = 0;
     hero.position.y = 0;
     hero.health = health;
+    //hero.hunger = health;
     hero.spell_count =spell_count;
     hero.symbol = symbol;
     hero.weapon_count = weapon_count;
+    hero.my_weapons[0].type = 4;
+    hero.my_weapons[0].damage = 5;
+    hero.my_weapons[0].range = 1;
+    hero.my_weapons[0].range_type = 0;
+    hero.my_weapons[0].symbol = 'M';
+    hero.selected_weapon = 0;
+    hero.selected_spell = -1;
+    hero.speed_spell = 1;
+    hero.health_spell = 1;
+    hero.damage_spell = 1;
+    hero.spell_time_left = 0;
     return hero;
 }
 
@@ -24,9 +44,13 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
     int break_point = 1;
     int monster_counter;
     int room_index;
+    int last_health;
     print_data(data_win, main_game->hero, level);
     while(break_point && ((ch = getch()) != 'q'))
     {
+        speed_spell(main_game);
+        health_speed(main_game, &last_health);
+        damage_spell(main_game);
         print_message(msg_win, "");
         flag = 0;
         newPosition = main_game->hero.position;
@@ -66,8 +90,30 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
                 toggle_map_display(main_game, level);
                 break;
             case 'i':
-                show_combined_item_menu(main_game);
+                show_combined_item_menu(main_game, msg_win, data_win, level);
+                print_message(msg_win, "");
+                print_data(data_win, main_game->hero, level);
+                refresh();
                 flag = 1;
+                break;
+            case ' ':
+                attack(main_game, msg_win, level);
+                /*بازی هیولا*/
+                if(main_game->hero.speed_spell != 3)
+                {
+                room_index = is_in_monster_room(main_game, level);
+                monster_counter = how_much_monster_nearby(main_game, level);
+                if(monster_counter)
+                {
+                    monster_attack(main_game, level, msg_win, monster_counter);
+                }
+                else
+                {
+                    if(room_index)
+                        monster_chase(main_game, level, room_index - 1);
+                }
+                }
+                /**/
                 break;
             case 'f':
         char direction = getch();
@@ -163,18 +209,19 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
                 update_map(main_game, level);
             }
             /*بازی هیولا*/
+            if(main_game->hero.speed_spell != 3)
+            {
             room_index = is_in_monster_room(main_game, level);
             monster_counter = how_much_monster_nearby(main_game, level);
             if(monster_counter)
             {
                 monster_attack(main_game, level, msg_win, monster_counter);
-                /*if(room_index)
-                    monster_chase(main_game, level, room_index - 1);*/
             }
             else
             {
                 if(room_index)
                     monster_chase(main_game, level, room_index - 1);
+            }
             }
             /**/
             break;
@@ -185,18 +232,19 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
             mvaddch(newPosition.y + 3, newPosition.x, main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x]);
             main_game->hero.position = temp;
             /*بازی هیولا*/
+            if(main_game->hero.speed_spell != 3)
+            {
             room_index = is_in_monster_room(main_game, level);
             monster_counter = how_much_monster_nearby(main_game, level);
             if(monster_counter)
             {
                 monster_attack(main_game, level, msg_win, monster_counter);
-                if(room_index)
-                    monster_chase(main_game, level, room_index - 1);
             }
             else
             {
                 if(room_index)
                     monster_chase(main_game, level, room_index - 1);
+            }
             }
             /**/
             break;

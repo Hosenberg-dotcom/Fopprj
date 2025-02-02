@@ -158,3 +158,4 @@ int check_for_trap(Game* main_game, int level, MessageWindow* msg_win) {
     }
     return 0;
 }
+

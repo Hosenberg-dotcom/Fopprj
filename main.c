@@ -6,6 +6,8 @@ int main() {
     noecho();
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
+    init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    init_pair(3, COLOR_BLUE, COLOR_BLACK);
     cbreak();
     keypad(stdscr, TRUE);
     curs_set(0); // Hide the cursor

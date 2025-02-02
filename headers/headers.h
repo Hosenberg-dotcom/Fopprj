@@ -22,7 +22,7 @@
 #define MAX_FLOORS 4
 #define MAX_ROOM_MONSTERS 2
 #define MAX_ROOM_DOORS 4
-#define MAX_FOOD 100
+#define MAX_FOOD 200
 #define MAX_WEAPONS 200
 #define MAX_SPELLS 20
 #define MAX_ROOM_FOOD 2
@@ -63,7 +63,7 @@ typedef struct Weapons{
 typedef struct Spell{
     int type;
     char symbol;
-    int time_left;
+    //int time_left;
     Point position;
 }Spell;
 
@@ -92,8 +92,14 @@ typedef struct Character{
     int food_count;
     Weapons my_weapons[MAX_WEAPONS];
     int weapon_count;
+    int selected_weapon;
     Spell my_spells[MAX_SPELLS];
     int spell_count;
+    int selected_spell;
+    int spell_time_left;
+    int health_spell;
+    int speed_spell;
+    int damage_spell;
 } Character;
 
 typedef struct Room{
@@ -197,7 +203,18 @@ void monster_attack(Game *main_game, int level, MessageWindow *msg_win, int mons
 void monster_chase(Game *main_game, int level, int room_index);
 int is_in_monster_room(Game *main_game, int level);
 int pass_finding(Point* start, Point* destination, Game* main_game, int level);
+void show_combined_item_menu(Game *main_game, MessageWindow* msg_win, MessageWindow* data_win, int level);
+void speed_spell(Game* main_game);
+void health_speed(Game* main_game, int* last_health);
+void damage_spell(Game* main_game);
+void attack(Game* main_game, MessageWindow* msg_win, int level);
+void attack_melee(Game* main_game, int level, MessageWindow* msg_win);
+void remove_dead_monsters(Game* main_game, int level);
+void attack_ranged(Game* main_game, int level, MessageWindow* msg_win);
+void check_projectile_hit(Game* main_game, int level, int dy, int dx, MessageWindow* msg_win);
+void remove_weapon_if_empty(Character* hero, MessageWindow* msg_win);
+void find_and_put_down_weapon(Game* main_game, int level, Point position, MessageWindow* msg_win);
+void hit_monster(Game* main_game, int level, MessageWindow* msg_win, Point position);
 
-//void exit_game();
 
 #endif
