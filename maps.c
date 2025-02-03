@@ -237,14 +237,13 @@ void create_treasure_room(int height, int width, Game* main_game)
         room->monster[i].health = 30;
         room->monster[i].move_left = 10;
         room->monster[i].symbol = 'U';
-        room->monster[i].position = malloc(sizeof(Point));
 
         do {
-            room->monster[i].position->x = room->position.x + (rand() % (room->width - 2)) + 1;
-            room->monster[i].position->y = room->position.y + (rand() % (room->height - 2)) + 1;
-        } while (main_game->floors[4].map[room->monster[i].position->y][room->monster[i].position->x] != '.');
+            room->monster[i].position.x = room->position.x + (rand() % (room->width - 2)) + 1;
+            room->monster[i].position.y = room->position.y + (rand() % (room->height - 2)) + 1;
+        } while (main_game->floors[4].map[room->monster[i].position.y][room->monster[i].position.x] != '.');
 
-        main_game->floors[4].map[room->monster[i].position->y][room->monster[i].position->x] = 'U';
+        main_game->floors[4].map[room->monster[i].position.y][room->monster[i].position.x] = 'U';
     }
 
     for(int i = 0; i < 4; i++) {

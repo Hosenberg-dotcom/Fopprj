@@ -93,9 +93,8 @@ void remove_dead_monsters(Game* main_game, int level) {
 
         for (int m = 0; m < room->monster_count; m++) {
             if (room->monster[m].health <= 0) {
-                main_game->floors[level].map[room->monster[m].position->y][room->monster[m].position->x] = '.';
-                mvaddch(room->monster[m].position->y + 3, room->monster[m].position->x, '.');
-                free(room->monster[m].position);
+                main_game->floors[level].map[room->monster[m].position.y][room->monster[m].position.x] = '.';
+                mvaddch(room->monster[m].position.y + 3, room->monster[m].position.x, '.');
                 
                 for (int k = m; k < room->monster_count - 1; k++) {
                     room->monster[k] = room->monster[k + 1];
@@ -215,7 +214,7 @@ void hit_monster(Game* main_game, int level, MessageWindow* msg_win, Point posit
         for (int j = 0; j < room->monster_count; j++) {
             Monsters* monster = &room->monster[j];
 
-            if ((monster->position->x == position.x) && (monster->position->y == position.y)) {
+            if ((monster->position.x == position.x) && (monster->position.y == position.y)) {
                 monster->health -= main_game->hero.my_weapons[main_game->hero.selected_weapon].damage;
                 print_message(msg_win, "You score an excellent hit on a monster!");
                 remove_dead_monsters(main_game, level);

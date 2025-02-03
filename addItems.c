@@ -272,10 +272,9 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
                             break;
                     }
                 }
-                room->monster[j].position = malloc(sizeof(Point));
-                room->monster[j].position->x = x;
-                room->monster[j].position->y = y;
-                my_floor->map[room->monster[j].position->y][room->monster[j].position->x] = room->monster[j].symbol;
+                room->monster[j].position.x = x;
+                room->monster[j].position.y = y;
+                my_floor->map[room->monster[j].position.y][room->monster[j].position.x] = room->monster[j].symbol;
             }
         }
     }

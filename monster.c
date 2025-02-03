@@ -41,8 +41,8 @@ void monster_attack(Game *main_game, int level, MessageWindow *msg_win, int mons
     for(int i = 0; i < monster_near; i++)
     {
         int flag = 0;
-        int x = main_game->floors[level].rooms[index].monster[i].position->x;
-        int y = main_game->floors[level].rooms[index].monster[i].position->y;
+        int x = main_game->floors[level].rooms[index].monster[i].position.x;
+        int y = main_game->floors[level].rooms[index].monster[i].position.y;
         for(int j = - 1; j < 2; j++)
         {
             for(int k = - 1; k < 2; k++)
@@ -66,12 +66,12 @@ void monster_chase(Game *main_game, int level, int room_index) {
             Monsters *monster = &room->monster[j];
                     if(monster->move_left)
                     {
-                    Point temp = *(monster->position);
-                    pass_finding(monster->position, &(main_game->hero.position), main_game, level);
+                    Point temp = (monster->position);
+                    pass_finding(&(monster->position), &(main_game->hero.position), main_game, level);
                     main_game->floors[level].map[temp.y][temp.x] = '.';
                     mvaddch(temp.y + 3, temp.x, '.');
-                    main_game->floors[level].map[monster->position->y][monster->position->x] = monster->symbol;
-                    mvaddch(monster->position->y + 3, monster->position->x, monster->symbol);
+                    main_game->floors[level].map[monster->position.y][monster->position.x] = monster->symbol;
+                    mvaddch(monster->position.y + 3, monster->position.x, monster->symbol);
                     monster->move_left--;
                     }
             }

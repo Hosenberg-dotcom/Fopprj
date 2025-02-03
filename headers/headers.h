@@ -73,7 +73,7 @@ typedef struct Monsters{
     int health;
     int damage;
     int move_left;
-    Point* position;
+    Point position;
 }Monsters;
 
 typedef struct GoldType{
