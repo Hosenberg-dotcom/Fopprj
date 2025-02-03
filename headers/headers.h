@@ -15,6 +15,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <pthread.h>
+#include <unistd.h>
 
 #define MAX_QUEUE_SIZE 1000
 #define MAX_ITEMS 10
@@ -229,6 +230,10 @@ void remove_weapon_if_empty(Character* hero, MessageWindow* msg_win);
 void find_and_put_down_weapon(Game* main_game, int level, Point position, MessageWindow* msg_win);
 void hit_monster(Game* main_game, int level, MessageWindow* msg_win, Point position);
 void create_treasure_room(int height, int width, Game* main_game);
-
+int save_game(Game* main_game, int level);
+int load_game(Game* main_game, int* level);
+void resume_game();
+int does_save_exist();
+void close_all_ncurses_windows();
 
 #endif

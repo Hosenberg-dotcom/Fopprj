@@ -96,6 +96,16 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
                 refresh();
                 flag = 1;
                 break;
+            case 's':
+                print_message(msg_win, "Do you want to save the game? if yes press: y");
+                char ans = getch();
+                if(ans == 'y'){
+                    int did_it_save = save_game(main_game, level);
+                    if(did_it_save == 1) print_message(msg_win, "You can't save a Guest game!");
+                    else if(did_it_save == 2) print_message(msg_win, "Can not open the a file!");
+                    else if(did_it_save == 0) print_message(msg_win, "Game saved successfully!");
+                }
+                continue;
             case ' ':
                 attack(main_game, msg_win, level);
                 /*بازی هیولا*/

@@ -195,6 +195,7 @@ void login_menu() {
             sscanf(line, "%29s %29s %*s", stored_username, stored_password);
             if ((strcmp(username, stored_username) == 0) && (strcmp(password, stored_password) == 0)) {
                 duplicate_found = 1;
+                strcpy(this_game_settings.player_name, stored_username);
                 break;
             }
         }
@@ -215,16 +216,22 @@ void login_menu() {
                     clear();
                     curs_set(0);
                     noecho();
+                    delwin(settings_win);
                     refresh();
-                    display_main_menu();
+                    display_game();
                 }
                 else if(a == '2')
                 {
                     clear();
                     curs_set(0);
                     noecho();
+                    delwin(settings_win);
                     refresh();
-                    display_main_menu();
+                    if (does_save_exist()) {
+                        resume_game();
+                    } else {
+                        printw("No save file found for user: %s\n", this_game_settings.player_name);
+                    }
                 }
             }
         }
@@ -891,9 +898,10 @@ void exit_game() {
             case '\n': // Enter key
                 switch (highlight) {
                     case 0:
-                        delwin(settings_win);
+                        close_all_ncurses_windows();
                         return;
                     case 1:
+                        clear();
                         delwin(settings_win);
                         display_main_menu();
                         return;
@@ -943,4 +951,9 @@ int regex_match(const char *string, const char *pattern) {
     ret = regexec(&regex, string, 0, NULL, 0);
     regfree(&regex);
     return ret == 0;
+}
+
+void close_all_ncurses_windows() {
+    endwin();  
+    printf("\033c"); 
 }
