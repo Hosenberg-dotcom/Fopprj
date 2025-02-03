@@ -145,7 +145,7 @@ typedef struct Floor{
 }Treasur_room;*/
 
 typedef struct Game{
-    Floor floors[4];
+    Floor floors[5];
     Character hero;
     //Room treaser_room;
 } Game;

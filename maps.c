@@ -197,17 +197,21 @@ Point dequeue(Queue* q) {
 
 void create_treasure_room(int height, int width, Game* main_game)
 {
-    Room* room = &main_game->floors[3].rooms[0]; // سطح ۳ = آخرین سطح
+    Room* room = &main_game->floors[4].rooms[0]; // سطح ۳ = آخرین سطح
     
-    room->position.x = width * 3 / 4;
-    room->position.y = height * 3 / 4;
+    room->position.x = width * 3 / 8;
+    room->position.y = height * 3 / 8;
     room->monster_count = 2;
     room->trap_count = 2;
     room->gold_count = 4;
     room->width = width / 4;
     room->height = height / 4;
+    room->door_count = 0; room->food_count = 0;
+    room->spell_count = 0;
+    room->type = 2;
+    room->weapon_count = 0;
 
-    main_game->floors[3].map = create_empty_map(width, height);
+    main_game->floors[4].map = create_empty_map(width, height);
 
     int x = room->position.x;
     int y = room->position.y;
@@ -215,14 +219,14 @@ void create_treasure_room(int height, int width, Game* main_game)
     for (int i = y; i < y + room->height; i++) {
         for (int j = x; j < x + room->width; j++) {
             if (i == y || i == y + room->height - 1 || j == x || j == x + room->width - 1) {
-                main_game->floors[3].map[i][j] = (j == x || j == x + room->width - 1) ? '|' : '_';
+                main_game->floors[4].map[i][j] = (j == x || j == x + room->width - 1) ? '|' : '_';
             }
             else {
-                main_game->floors[3].map[i][j] = '.';
+                main_game->floors[4].map[i][j] = '.';
             }
             if((i == y && j == x) || (i == y && j == x + room->width - 1))
             {
-                main_game->floors[3].map[i][j] = ' ';
+                main_game->floors[4].map[i][j] = ' ';
             }
         }
     }
@@ -238,23 +242,29 @@ void create_treasure_room(int height, int width, Game* main_game)
         do {
             room->monster[i].position->x = room->position.x + (rand() % (room->width - 2)) + 1;
             room->monster[i].position->y = room->position.y + (rand() % (room->height - 2)) + 1;
-        } while (main_game->floors[3].map[room->monster[i].position->y][room->monster[i].position->x] != '.');
+        } while (main_game->floors[4].map[room->monster[i].position->y][room->monster[i].position->x] != '.');
 
-        main_game->floors[3].map[room->monster[i].position->y][room->monster[i].position->x] = 'U';
+        main_game->floors[4].map[room->monster[i].position->y][room->monster[i].position->x] = 'U';
     }
 
     for(int i = 0; i < 4; i++) {
         do {
             room->golds[i].position.x = room->position.x + (rand() % (room->width - 2)) + 1;
             room->golds[i].position.y = room->position.y + (rand() % (room->height - 2)) + 1;
-        } while (main_game->floors[3].map[room->golds[i].position.y][room->golds[i].position.x] != '.');
+        } while (main_game->floors[4].map[room->golds[i].position.y][room->golds[i].position.x] != '.');
 
-        main_game->floors[3].map[room->golds[i].position.y][room->golds[i].position.x] = 'L';
+        main_game->floors[4].map[room->golds[i].position.y][room->golds[i].position.x] = 'L';
     }
+    do
+    {
+        main_game->hero.position.x = room->position.x + (rand() % (room->width - 2)) + 1;
+        main_game->hero.position.y = room->position.y + (rand() % (room->height - 2)) + 1;
+    } while (main_game->floors[4].map[main_game->hero.position.y][main_game->hero.position.x] != '.');
+    main_game->floors[4].map[main_game->hero.position.y][main_game->hero.position.x] = main_game->hero.symbol;
 
     for(int i = 0; i < height; i++) {
         for(int j = 0; j < width; j++) {
-            mvaddch(i + 3, j, main_game->floors[3].map[i][j]);
+            mvaddch(i + 3, j, main_game->floors[4].map[i][j]);
         }
     }
 

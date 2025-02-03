@@ -258,10 +258,13 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
             else{
                 clear();
                 refresh();
-                getch();
+                //getch();
                 getch();
                 level = 4;
-                create_treasure_room(main_game->floors[1].height + 6, main_game->floors[1].width, main_game);
+                int rows, cols;
+                getmaxyx(stdscr, rows, cols);
+                create_treasure_room(rows, cols, main_game);
+                getch();
             }
                 break;
         case ' ':
