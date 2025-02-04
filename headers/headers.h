@@ -248,5 +248,6 @@ int update_player_score(const char* username, int score, int gold, int done_game
 void display_scoreboard(const char *current_user);
 void load_scoreboard(Player players[], int *player_count, const char *filename);
 int compare_scores(const void *a, const void *b);
+void display_profile();
 
 #endif

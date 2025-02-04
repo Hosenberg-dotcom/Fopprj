@@ -392,28 +392,26 @@ void settings_menu() {
         "Change Character Color",
         "Choose Hero",
         "Select Music",
+        "Profile",
         "Back to Main Menu"
     };
     int n_options = sizeof(options) / sizeof(options[0]);
 
-    int highlight = 0; // Tracks the currently highlighted option
+    int highlight = 0; 
     int choice;
 
-    // Create a new window for the settings menu
     int box_start_y = 2 * rows / 8;
     int box_start_x = 3 * cols / 8;
     int box_height = 1 * rows / 2;
     int box_width = 1 * cols / 4;
     WINDOW *settings_win = newwin(box_height, box_width, box_start_y, box_start_x);
-    keypad(settings_win, TRUE); // Enable keypad input for the window
+    keypad(settings_win, TRUE); 
 
-    // Draw the box
     box(settings_win, 0, 0);
     int title_x = (box_width - strlen(" #Settings# ")) / 2;
     mvwprintw(settings_win, 0, title_x, "# Settings #");
 
     while (1) {
-        // Print menu options with highlighting
         for (int i = 0; i < n_options; i++) {
             if (i == highlight) {
                 wattron(settings_win, A_REVERSE);
@@ -424,10 +422,7 @@ void settings_menu() {
             }
         }
 
-        // Refresh the window
         wrefresh(settings_win);
-
-        // Handle user input
         choice = wgetch(settings_win);
         switch (choice) {
             case KEY_UP:
@@ -436,7 +431,7 @@ void settings_menu() {
             case KEY_DOWN:
                 highlight = (highlight + 1) % n_options;
                 break;
-            case '\n': // Enter key
+            case '\n':
                 switch (highlight) {
                     case 0:
                         delwin(settings_win);
@@ -456,6 +451,10 @@ void settings_menu() {
                         return;
                     case 4:
                         delwin(settings_win);
+                        display_profile();
+                        return;
+                    case 5:
+                        delwin(settings_win);
                         display_main_menu();
                         return;
                 }
@@ -465,9 +464,9 @@ void settings_menu() {
         }
     }
 
-    // Delete the window at the end
     delwin(settings_win);
 }
+
 
 
 void set_difficulty() {
@@ -1042,5 +1041,70 @@ void display_scoreboard(const char *current_user) {
     }
         if (ch == KEY_UP && selected > 0) selected--;
         if (ch == KEY_DOWN && selected < player_count - 1) selected++;
+    }
+}
+
+void display_profile() {
+    curs_set(0);
+    clear();
+    refresh();
+    int rows, cols;
+    getmaxyx(stdscr, rows, cols);
+
+    int box_start_y = 2 * rows / 8;
+    int box_start_x = 3 * cols / 8;
+    int box_height = 1 * rows / 2;
+    int box_width = 1 * cols / 4;
+    WINDOW *profile_win = newwin(box_height, box_width, box_start_y, box_start_x);
+    keypad(profile_win, TRUE);
+
+    box(profile_win, 0, 0);
+    int title_x = (box_width - strlen("# Profile #")) / 2;
+    mvwprintw(profile_win, 0, title_x, "# Profile #");
+    char line[256];
+    char username[50], password[50], email[100];
+    int found = 0;
+
+    if(strcmp(this_game_settings.player_name, "Guest") == 0)
+    {
+        mvwprintw(profile_win, 3, 2, "Guest user");
+        wrefresh(profile_win);
+
+        getch();
+        return;
+    }
+    
+    FILE *file = fopen("usersinputs.txt", "r");
+    if (file) {
+        while (fgets(line, sizeof(line), file)) {
+            if (sscanf(line, "%49s %49s %99s", username, password, email) == 3) {
+                if (strcmp(username, this_game_settings.player_name) == 0) {
+                    found = 1;
+                    break;
+                }
+            }
+        }
+        fclose(file);
+    }
+    /*mvwprintw(profile_win, 5, 2, "%s", this_game_settings.player_name);
+    mvwprintw(profile_win, 6, 2, "%s", username);*/
+    if (found) {
+        mvwprintw(profile_win, 3, 2, "Username:");
+        mvwprintw(profile_win, 5, 2, "%s", username);
+        mvwprintw(profile_win, 7, 2, "Email:");
+        mvwprintw(profile_win, 9, 2, "%s", email);
+        mvwprintw(profile_win, 11, 2, "Password:");
+        mvwprintw(profile_win, 13, 2, "%s", password);
+    } else {
+        mvwprintw(profile_win, 3, 2, "User Not Found!");
+    }
+    wrefresh(profile_win);
+    while (1) {
+        int ch = wgetch(profile_win);
+        if (ch == 'q') {
+            delwin(profile_win);
+            settings_menu();
+            return;
+        }
     }
 }
