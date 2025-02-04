@@ -94,8 +94,11 @@ void remove_dead_monsters(Game* main_game, int level) {
         for (int m = 0; m < room->monster_count; m++) {
             if (room->monster[m].health <= 0) {
                 main_game->floors[level].map[room->monster[m].position.y][room->monster[m].position.x] = '.';
+                /*فقط چک کردن اتاق*/
                 mvaddch(room->monster[m].position.y + 3, room->monster[m].position.x, '.');
                 
+
+                /**/
                 for (int k = m; k < room->monster_count - 1; k++) {
                     room->monster[k] = room->monster[k + 1];
                 }

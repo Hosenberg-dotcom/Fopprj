@@ -17,7 +17,6 @@ Character creat_hero(int health, char symbol, int color, int gold, int food_coun
     hero.position.x = 0;
     hero.position.y = 0;
     hero.health = health;
-    //hero.hunger = health;
     hero.spell_count =spell_count;
     hero.symbol = symbol;
     hero.weapon_count = weapon_count;
@@ -175,10 +174,14 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
                     }
                     main_game->hero.position = temp1;
                     main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x] = my_ch;
+                    attron(COLOR_PAIR(5));
                     mvaddch(main_game->hero.position.y + 3, main_game->hero.position.x, my_ch);
+                    attroff(COLOR_PAIR(5));
                     my_ch = main_game->floors[level].map[newPosition.y][newPosition.x];
                     main_game->floors[level].map[newPosition.y][newPosition.x] = main_game->hero.symbol;
+                    attron(COLOR_PAIR(3));
                     mvaddch(newPosition.y + 3, newPosition.x, main_game->hero.symbol);
+                    attroff(COLOR_PAIR(3));
                     main_game->hero.position = newPosition;
                     if(my_ch == '+' || my_ch == '#')
                     {
@@ -209,14 +212,18 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
             }
             main_game->hero.position = temp1;
             main_game->floors[level].map[main_game->hero.position.y][main_game->hero.position.x] = my_ch;
+            attron(COLOR_PAIR(5));
             mvaddch(main_game->hero.position.y + 3, main_game->hero.position.x, my_ch);
+            attroff(COLOR_PAIR(5));
             my_ch = main_game->floors[level].map[newPosition.y][newPosition.x];
             main_game->floors[level].map[newPosition.y][newPosition.x] = main_game->hero.symbol;
+            attron(COLOR_PAIR(3));
             mvaddch(newPosition.y + 3, newPosition.x, main_game->hero.symbol);
+            attroff(COLOR_PAIR(3));
             main_game->hero.position = newPosition;
             if(my_ch == '+' || my_ch == '#')
             {
-                update_map(main_game, level);
+                 update_map(main_game, level);
             }
             /*بازی هیولا*/
             if(main_game->hero.speed_spell != 3)
@@ -268,7 +275,6 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
             else{
                 clear();
                 refresh();
-                //getch();
                 getch();
                 level = 4;
                 int rows, cols;

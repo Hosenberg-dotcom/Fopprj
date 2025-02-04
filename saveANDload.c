@@ -74,8 +74,55 @@ void resume_game()
         {
             if(main_game->floors[level].printed_map[i][j])
             {
-                mvprintw(i + 3, j, "%c", main_game->floors[level].map[i][j]);
+                char printed_ch = main_game->floors[level].map[i][j];
+                int room_type = -1;
+                for(int k = 0; k < main_game->floors[level].room_count; k++)
+                {
+                    int y = main_game->floors[level].rooms[k].position.y;
+                    int x = main_game->floors[level].rooms[k].position.x;
+                    int height = main_game->floors[level].rooms[k].height;
+                    int width = main_game->floors[level].rooms[k].width;
+                    if((i >= y) && (i < y + height) && (j >= x) && (j < x + width))
+                        room_type = main_game->floors[level].rooms[k].type;
+                }
+                if((printed_ch == '@') || (printed_ch == '&') || (printed_ch == '%') || (printed_ch == '$')
+                || (printed_ch == 'D') || (printed_ch == 'F') || (printed_ch == 'S') || (printed_ch == 'U') || (printed_ch == 'G'))
+                {
+                    attron(COLOR_PAIR(3));
+                    mvprintw(i + 3, j, "%c", printed_ch);
+                    attroff(COLOR_PAIR(3));
+                }
+                else if(printed_ch == 'L')
+                {
+                    attron(COLOR_PAIR(4));
+                    mvprintw(i + 3, j, "%c", printed_ch);
+                    attroff(COLOR_PAIR(4));
+                }
+                else if(room_type == 1)
+                {
+                    attron(COLOR_PAIR(2));
+                    mvprintw(i + 3, j, "%c", printed_ch);
+                    attroff(COLOR_PAIR(2));
+                }
+                else if(room_type == 3)
+                {
+                    attron(COLOR_PAIR(4));
+                    mvprintw(i + 3, j, "%c", printed_ch);
+                    attroff(COLOR_PAIR(4));
+                }
+                else
+                {
+                    mvprintw(i + 3, j, "%c", printed_ch);
+                }
             }
+
+
+
+
+
+
+                //mvprintw(i + 3, j, "%c", main_game->floors[level].map[i][j]);
+            
         }
     }
     refresh();

@@ -69,9 +69,13 @@ void monster_chase(Game *main_game, int level, int room_index) {
                     Point temp = (monster->position);
                     pass_finding(&(monster->position), &(main_game->hero.position), main_game, level);
                     main_game->floors[level].map[temp.y][temp.x] = '.';
+                    attron(COLOR_PAIR(6));
                     mvaddch(temp.y + 3, temp.x, '.');
+                    attroff(COLOR_PAIR(6));
                     main_game->floors[level].map[monster->position.y][monster->position.x] = monster->symbol;
+                    attron(COLOR_PAIR(3));
                     mvaddch(monster->position.y + 3, monster->position.x, monster->symbol);
+                    attroff(COLOR_PAIR(3));
                     monster->move_left--;
                     }
             }
