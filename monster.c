@@ -73,9 +73,9 @@ void monster_chase(Game *main_game, int level, int room_index) {
                     mvaddch(temp.y + 3, temp.x, '.');
                     attroff(COLOR_PAIR(6));
                     main_game->floors[level].map[monster->position.y][monster->position.x] = monster->symbol;
-                    attron(COLOR_PAIR(3));
+                    attron(COLOR_PAIR(this_game_settings.hero_color));
                     mvaddch(monster->position.y + 3, monster->position.x, monster->symbol);
-                    attroff(COLOR_PAIR(3));
+                    attroff(COLOR_PAIR(this_game_settings.hero_color));
                     monster->move_left--;
                     }
             }

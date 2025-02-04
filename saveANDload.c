@@ -88,9 +88,9 @@ void resume_game()
                 if((printed_ch == '@') || (printed_ch == '&') || (printed_ch == '%') || (printed_ch == '$')
                 || (printed_ch == 'D') || (printed_ch == 'F') || (printed_ch == 'S') || (printed_ch == 'U') || (printed_ch == 'G'))
                 {
-                    attron(COLOR_PAIR(3));
+                    attron(COLOR_PAIR(this_game_settings.hero_color));
                     mvprintw(i + 3, j, "%c", printed_ch);
-                    attroff(COLOR_PAIR(3));
+                    attroff(COLOR_PAIR(this_game_settings.hero_color));
                 }
                 else if(printed_ch == 'L')
                 {

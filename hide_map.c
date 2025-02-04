@@ -15,9 +15,9 @@ void print_room(Game* main_game, int level) {
                     if((printed_ch == '@') || (printed_ch == '&') || (printed_ch == '%') || (printed_ch == '$')
                         || (printed_ch == 'D') || (printed_ch == 'F') || (printed_ch == 'S') || (printed_ch == 'U') || (printed_ch == 'G'))
                         {
-                            attron(COLOR_PAIR(3));
+                            attron(COLOR_PAIR(this_game_settings.hero_color));
                             mvprintw(y + 3, x, "%c", printed_ch);
-                            attroff(COLOR_PAIR(3));
+                            attroff(COLOR_PAIR(this_game_settings.hero_color));
                         }
                         else if(printed_ch == 'L')
                         {
@@ -69,9 +69,9 @@ void print_corridors(Game* main_game, int level) {
                 if((printed_ch == '@') || (printed_ch == '&') || (printed_ch == '%') || (printed_ch == '$')
                 || (printed_ch == 'D') || (printed_ch == 'F') || (printed_ch == 'S') || (printed_ch == 'U') || (printed_ch == 'G'))
                 {
-                    attron(COLOR_PAIR(3));
+                    attron(COLOR_PAIR(this_game_settings.hero_color));
                     mvprintw(new_y + 3, new_x, "%c", printed_ch);
-                    attroff(COLOR_PAIR(3));
+                    attroff(COLOR_PAIR(this_game_settings.hero_color));
                 }
                 else if(printed_ch == 'L')
                 {
@@ -122,9 +122,9 @@ void toggle_map_display(Game* main_game, int level) {
                 if((printed_ch == '@') || (printed_ch == '&') || (printed_ch == '%') || (printed_ch == '$')
                 || (printed_ch == 'D') || (printed_ch == 'F') || (printed_ch == 'S') || (printed_ch == 'U') || (printed_ch == 'G'))
                 {
-                    attron(COLOR_PAIR(3));
+                    attron(COLOR_PAIR(this_game_settings.hero_color));
                     mvprintw(i + 3, j, "%c", printed_ch);
-                    attroff(COLOR_PAIR(3));
+                    attroff(COLOR_PAIR(this_game_settings.hero_color));
                 }
                 else if(printed_ch == 'L')
                 {

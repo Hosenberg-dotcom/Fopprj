@@ -1,6 +1,6 @@
 #include "headers.h"
 
-this_game_setups this_game_settings = {100, 1, '@', "Guest\0"};
+this_game_setups this_game_settings = {100, 3, '@', "Guest\0"};
 
 void display_main_menu() {
     clear();
@@ -627,12 +627,12 @@ void change_character_color() {
                         settings_menu();
                         return;
                     case 1:
-                        this_game_settings.hero_color = 2;
+                        this_game_settings.hero_color = 3;
                         delwin(settings_win);
                         settings_menu();
                         return;
                     case 2:
-                        this_game_settings.hero_color = 3;
+                        this_game_settings.hero_color = 2;
                         delwin(settings_win);
                         settings_menu();
                         return;

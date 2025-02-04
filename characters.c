@@ -181,9 +181,9 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
                     attroff(COLOR_PAIR(5));
                     my_ch = main_game->floors[level].map[newPosition.y][newPosition.x];
                     main_game->floors[level].map[newPosition.y][newPosition.x] = main_game->hero.symbol;
-                    attron(COLOR_PAIR(3));
+                    attron(COLOR_PAIR(this_game_settings.hero_color));
                     mvaddch(newPosition.y + 3, newPosition.x, main_game->hero.symbol);
-                    attroff(COLOR_PAIR(3));
+                    attroff(COLOR_PAIR(this_game_settings.hero_color));
                     main_game->hero.position = newPosition;
                     if(my_ch == '+' || my_ch == '#')
                     {
@@ -219,9 +219,9 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
             attroff(COLOR_PAIR(5));
             my_ch = main_game->floors[level].map[newPosition.y][newPosition.x];
             main_game->floors[level].map[newPosition.y][newPosition.x] = main_game->hero.symbol;
-            attron(COLOR_PAIR(3));
+            attron(COLOR_PAIR(this_game_settings.hero_color));
             mvaddch(newPosition.y + 3, newPosition.x, main_game->hero.symbol);
-            attroff(COLOR_PAIR(3));
+            attroff(COLOR_PAIR(this_game_settings.hero_color));
             main_game->hero.position = newPosition;
             if(my_ch == '+' || my_ch == '#')
             {
