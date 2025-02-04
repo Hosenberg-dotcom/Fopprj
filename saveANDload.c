@@ -115,14 +115,6 @@ void resume_game()
                     mvprintw(i + 3, j, "%c", printed_ch);
                 }
             }
-
-
-
-
-
-
-                //mvprintw(i + 3, j, "%c", main_game->floors[level].map[i][j]);
-            
         }
     }
     refresh();
@@ -138,4 +130,42 @@ int does_save_exist() {
     snprintf(filename, sizeof(filename), "savegame_%s.dat", this_game_settings.player_name);
 
     return access(filename, F_OK) != -1;
+}
+
+
+int update_player_score(const char* username, int score, int gold, int done_game) {
+    if(strcmp(username, "Guest") == 0)
+        return 1;
+    FILE* file = fopen(SCOREBOARD_FILE, "r");
+    if (!file) {
+        file = fopen(SCOREBOARD_FILE, "w");
+        fprintf(file, "%s %d %d %d\n", username, score, gold, done_game);
+        fclose(file);
+        return 0;
+    }
+
+    char temp_filename[] = "scoreboard_temp.txt";
+    FILE* temp_file = fopen(temp_filename, "w");
+
+    char file_username[50];
+    int file_score, file_gold, file_games;
+    int found = 0;
+
+    while (fscanf(file, "%s %d %d %d", file_username, &file_score, &file_gold, &file_games) == 4) {
+        if (strcmp(file_username, username) == 0) {
+            file_score += score;
+            file_gold += gold;
+            file_games += done_game;
+            found = 1;
+        }
+        fprintf(temp_file, "%s %d %d %d\n", file_username, file_score, file_gold, file_games);
+    }
+
+    if (!found) {
+        fprintf(temp_file, "%s %d %d %d\n", username, score, gold, done_game);
+    }
+    fclose(file);
+    fclose(temp_file);
+    remove(SCOREBOARD_FILE);
+    rename(temp_filename, SCOREBOARD_FILE);
 }

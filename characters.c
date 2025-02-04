@@ -100,6 +100,8 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
                 char ans = getch();
                 if(ans == 'y'){
                     int did_it_save = save_game(main_game, level);
+                    int score_save = update_player_score(this_game_settings.player_name, main_game->hero.gold * (1 + level ), main_game->hero.gold, 0);
+                    if(score_save) print_message(msg_win, "You can't save a Guest game!");
                     if(did_it_save == 1) print_message(msg_win, "You can't save a Guest game!");
                     else if(did_it_save == 2) print_message(msg_win, "Can not open the a file!");
                     else if(did_it_save == 0) print_message(msg_win, "Game saved successfully!");

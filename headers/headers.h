@@ -32,6 +32,8 @@
 #define MAX_ROOM_GOLDS 4
 #define MAX_ROOM_TRAP 2
 #define MAX_PLAYER_NAME_LENGTH 30
+#define SCOREBOARD_FILE "scoreboard.txt"
+#define MAX_PLAYERS 100
 
 extern struct this_game_setups this_game_settings;
 extern pthread_t music_thread;  
@@ -169,6 +171,13 @@ typedef struct this_game_setups{
     char hero_symbol;
     char player_name[MAX_PLAYER_NAME_LENGTH];
 }this_game_setups;
+
+typedef struct Player{
+    char username[50];
+    int gold;
+    int score;
+    int games_played;
+} Player;
 // Function prototypes
 void display_main_menu();
 void guest_menu();
@@ -235,5 +244,9 @@ int load_game(Game* main_game, int* level);
 void resume_game();
 int does_save_exist();
 void close_all_ncurses_windows();
+int update_player_score(const char* username, int score, int gold, int done_game);
+void display_scoreboard(const char *current_user);
+void load_scoreboard(Player players[], int *player_count, const char *filename);
+int compare_scores(const void *a, const void *b);
 
 #endif
