@@ -24,7 +24,6 @@ void display_game() {
     MessageWindow* data_win = init_message_window(cols, rows + 6, 1);
 
     main_game->hero = creat_hero(this_game_settings.difficulty, this_game_settings.hero_symbol, this_game_settings.hero_color, 0, this_game_settings.difficulty, 1, 0);
-    //main_game->treaser_room = create_treasure_room(rows + 6, cols);
     make_floor(main_game, 0, msg_win, data_win);
 
     destroy_message_window(msg_win);

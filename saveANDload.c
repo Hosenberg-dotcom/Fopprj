@@ -136,10 +136,12 @@ int does_save_exist() {
 int update_player_score(const char* username, int score, int gold, int done_game) {
     if(strcmp(username, "Guest") == 0)
         return 1;
+
     FILE* file = fopen(SCOREBOARD_FILE, "r");
     if (!file) {
         file = fopen(SCOREBOARD_FILE, "w");
-        fprintf(file, "%s %d %d %d\n", username, score, gold, done_game);
+        time_t current_time = time(NULL);
+        fprintf(file, "%s %d %d %d %ld\n", username, score, gold, done_game, current_time);
         fclose(file);
         return 0;
     }
@@ -149,21 +151,24 @@ int update_player_score(const char* username, int score, int gold, int done_game
 
     char file_username[50];
     int file_score, file_gold, file_games;
+    time_t first_play_time;
     int found = 0;
 
-    while (fscanf(file, "%s %d %d %d", file_username, &file_score, &file_gold, &file_games) == 4) {
+    while (fscanf(file, "%s %d %d %d %ld", file_username, &file_score, &file_gold, &file_games, &first_play_time) == 5) {
         if (strcmp(file_username, username) == 0) {
             file_score += score;
             file_gold += gold;
             file_games += done_game;
             found = 1;
         }
-        fprintf(temp_file, "%s %d %d %d\n", file_username, file_score, file_gold, file_games);
+        fprintf(temp_file, "%s %d %d %d %ld\n", file_username, file_score, file_gold, file_games, first_play_time);
     }
 
     if (!found) {
-        fprintf(temp_file, "%s %d %d %d\n", username, score, gold, done_game);
+        time_t current_time = time(NULL); 
+        fprintf(temp_file, "%s %d %d %d %ld\n", username, score, gold, done_game, current_time);
     }
+
     fclose(file);
     fclose(temp_file);
     remove(SCOREBOARD_FILE);

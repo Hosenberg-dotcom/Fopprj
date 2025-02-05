@@ -242,8 +242,12 @@ void create_treasure_room(int height, int width, Game* main_game, int level, Mes
             room->monster[i].position.x = room->position.x + (rand() % (room->width - 2)) + 1;
             room->monster[i].position.y = room->position.y + (rand() % (room->height - 2)) + 1;
         } while (main_game->floors[4].map[room->monster[i].position.y][room->monster[i].position.x] != '.');
-
         main_game->floors[4].map[room->monster[i].position.y][room->monster[i].position.x] = 'U';
+
+        do {
+            room->trap_position[i].x = room->position.x + (rand() % (room->width - 2)) + 1;
+            room->trap_position[i].y = room->position.y + (rand() % (room->height - 2)) + 1;
+        } while (main_game->floors[4].map[room->trap_position[i].y][room->trap_position[i].x] != '.');
     }
 
     for(int i = 0; i < 4; i++) {

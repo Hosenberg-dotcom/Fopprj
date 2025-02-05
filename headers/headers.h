@@ -66,7 +66,6 @@ typedef struct Weapons{
 typedef struct Spell{
     int type;
     char symbol;
-    //int time_left;
     Point position;
 }Spell;
 
@@ -135,22 +134,9 @@ typedef struct Floor{
     int show_full_map;
 } Floor;
 
-/*typedef struct Treasur_room{
-    Point position;
-    int width, height;
-    Monsters monster[5];
-    int monster_count;
-    GoldType golds[5];
-    int gold_count;
-    Point trap_position[5];
-    int trap_count;
-    char** map;
-}Treasur_room;*/
-
 typedef struct Game{
     Floor floors[5];
     Character hero;
-    //Room treaser_room;
 } Game;
 
 typedef struct Queue{
@@ -172,12 +158,14 @@ typedef struct this_game_setups{
     char player_name[MAX_PLAYER_NAME_LENGTH];
 }this_game_setups;
 
-typedef struct Player{
+typedef struct Player {
     char username[50];
     int gold;
     int score;
     int games_played;
+    time_t first_play_time; // ذخیره زمان اولین بازی (تعداد ثانیه از 1970)
 } Player;
+
 // Function prototypes
 void display_main_menu();
 void guest_menu();

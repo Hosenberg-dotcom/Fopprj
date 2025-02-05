@@ -1007,14 +1007,17 @@ void load_scoreboard(Player players[], int *player_count, const char *filename) 
     }
 
     *player_count = 0;
-    while (fscanf(file, "%s %d %d %d", players[*player_count].username, 
+    while (fscanf(file, "%s %d %d %d %ld", 
+                  players[*player_count].username, 
                   &players[*player_count].gold, 
                   &players[*player_count].score, 
-                  &players[*player_count].games_played) == 4) {
+                  &players[*player_count].games_played,
+                  &players[*player_count].first_play_time) == 5) {
         (*player_count)++;
     }
     fclose(file);
 }
+
 
 int compare_scores(const void *a, const void *b) {
     return ((Player *)b)->score - ((Player *)a)->score;
@@ -1024,14 +1027,14 @@ void display_scoreboard(const char *current_user) {
     clear();
     refresh();
     curs_set(0);
-    if(strcmp(current_user, "Guest") == 0)
-    {
+    if(strcmp(current_user, "Guest") == 0) {
         mvprintw(10, 60, "You need to login to see scoretable");
         getch();
         clear();
         display_main_menu();
         return;
     }
+
     Player players[MAX_PLAYERS];
     int player_count = 0;
     load_scoreboard(players, &player_count, "scoreboard.txt");
@@ -1045,7 +1048,7 @@ void display_scoreboard(const char *current_user) {
 
     WINDOW *score_win = newwin(max_rows * 3 / 5, max_cols / 2, max_rows * 1 / 5, max_cols / 4);
     keypad(score_win, TRUE);
-    
+
     while (1) {
         werase(score_win);
         box(score_win, 0, 0);
@@ -1059,32 +1062,34 @@ void display_scoreboard(const char *current_user) {
             wattron(score_win, COLOR_PAIR(color));
             if (i < 3) wattron(score_win, A_UNDERLINE);
 
-            mvwprintw(score_win, row, 2, "%2d. %-15s Gold: %d | Score: %d | Games: %d", 
-                      i + 1, players[i].username, players[i].gold, players[i].score, players[i].games_played);
+            time_t now = time(NULL);
+            double days_passed = difftime(now, players[i].first_play_time) / (60 * 60 * 24);
+
+            mvwprintw(score_win, row, 2, "%2d. %-15s Gold: %d | Score: %d | Games: %d | Days: %.0f", 
+                      i + 1, players[i].username, players[i].gold, players[i].score, players[i].games_played, days_passed);
 
             wattroff(score_win, A_UNDERLINE);
             wattroff(score_win, COLOR_PAIR(color));
 
-            if (i == 0) mvwprintw(score_win, row, max_cols / 4 + 15, "🏆 CHAMPION");
-            if (i == 1) mvwprintw(score_win, row, max_cols / 4 + 15, "🥈 Runner-up");
-            if (i == 2) mvwprintw(score_win, row, max_cols / 4 + 15, "🥉 Third Place");
+            if (i == 0) mvwprintw(score_win, row, max_cols / 4 + 24, "🏆CHAMPION");
+            if (i == 1) mvwprintw(score_win, row, max_cols / 4 + 24, "🥈Runner-up");
+            if (i == 2) mvwprintw(score_win, row, max_cols / 4 + 24, "🥉Third Place");
         }
-        
+
         wrefresh(score_win);
         ch = wgetch(score_win);
 
-        if (ch == 'q')
-    {
-        delwin(score_win);
-        refresh();
-        display_main_menu();
-        return;
-
-    }
+        if (ch == 'q') {
+            delwin(score_win);
+            refresh();
+            display_main_menu();
+            return;
+        }
         if (ch == KEY_UP && selected > 0) selected--;
         if (ch == KEY_DOWN && selected < player_count - 1) selected++;
     }
 }
+
 
 void display_profile() {
     curs_set(0);
