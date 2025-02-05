@@ -44,6 +44,7 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
     int monster_counter;
     int room_index;
     int last_health;
+    static int move_counter = 0;
     print_data(data_win, main_game->hero, level);
     while(break_point && ((ch = getch()) != 'q'))
     {
@@ -63,6 +64,11 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
             display_main_menu();
             return;
         }
+        if(move_counter == 10)
+        {
+            move_counter = 0;
+            main_game->hero.health--;
+        }
         speed_spell(main_game);
         health_speed(main_game, &last_health);
         damage_spell(main_game);
@@ -72,31 +78,39 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
         switch (ch) {
             
             case '8':
+                move_counter++;
                 newPosition.y--;
                 break;
             case '2':
+                move_counter++;
                 newPosition.y++;
                 break;
             case '4':
-               newPosition.x--;
+                move_counter++;
+                newPosition.x--;
                 break;
             
             case '6':
+                move_counter++;
                 newPosition.x++;
                 break;
             case '7': 
+                move_counter++;
                 newPosition.y--;
                 newPosition.x--;
                 break;
             case '9': 
+                move_counter++;
                 newPosition.y--;
                 newPosition.x++;
                 break;
             case '1':
+                move_counter++;
                 newPosition.y++;
                 newPosition.x--;
                 break;
             case '3':
+                move_counter++;
                 newPosition.y++;
                 newPosition.x++;
                 break; 
@@ -124,6 +138,7 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
                 }
                 continue;
             case ' ':
+                move_counter++;
                 attack(main_game, msg_win, level);
                 /*بازی هیولا*/
                 if(main_game->hero.speed_spell != 3)
@@ -143,6 +158,7 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
                 /**/
                 break;
             case 'f':
+                monster_counter++;
         char direction = getch();
         switch (direction) {
             
