@@ -25,7 +25,6 @@ void generate_random_map(Floor* my_floor) {
         if (!check_collision(x, y, my_floor, *room)) {
             add_room(my_floor, x, y, room);
 
-            // اتصال در اولیه به اتاق قبلی
             int door_x = room->doors[0].x;
             int door_y = room->doors[0].y;
             if (rooms_created > 0) {
@@ -37,13 +36,13 @@ void generate_random_map(Floor* my_floor) {
         }
     }
 
-    // اطمینان از اتصال همه‌ی درها به راهرو یا درهای دیگر
+    
     for (int i = 0; i < my_floor->room_count; i++) {
         Room* room = &my_floor->rooms[i];
         for (int j = 0; j < room->door_count; j++) {
             Point door = room->doors[j];
 
-            // بررسی اتصال در به راهرو
+            
             int connected = 0;
             for (int d = 0; d < 4; d++) {
                 int nx = door.x + (d == 1) - (d == 3);
@@ -54,7 +53,7 @@ void generate_random_map(Floor* my_floor) {
                 }
             }
 
-            // اگر در متصل نبود، یک راهرو جدید اضافه می‌شود
+            
             if (!connected) {
                 for (int k = 0; k < my_floor->room_count; k++) {
                     if (k == i) continue;
@@ -74,11 +73,11 @@ int check_collision(int x, int y, Floor* my_floor, Room thisRoom) {
     for (int i = y - 1; i <= y + thisRoom.height; i++) {
         for (int j = x - 1; j <= x + thisRoom.width; j++) {
             if (i < 0 || i >= my_floor->height || j < 0 || j >= my_floor->width || my_floor->map[i][j] != ' ') {
-                return 1; // برخورد وجود دارد
+                return 1;
             }
         }
     }
-    return 0; // بدون برخورد
+    return 0;
 }
 
 void add_room(Floor* my_floor, int x, int y, Room* thisRoom) {

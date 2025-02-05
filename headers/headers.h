@@ -249,5 +249,7 @@ void display_scoreboard(const char *current_user);
 void load_scoreboard(Player players[], int *player_count, const char *filename);
 int compare_scores(const void *a, const void *b);
 void display_profile();
+void generate_random_password(char *password, int length);
+void retrieve_password();
 
 #endif

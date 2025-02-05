@@ -4,20 +4,17 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
     for (int i = 0; i < my_floor->room_count; i++) {
         Room* room = &my_floor->rooms[i];
 
-        // تنظیم نوع اتاق
         if (floor_index == MAX_FLOORS - 1 && i == my_floor->room_count - 1) {
-            room->type = 2;  // اتاق گنج فقط در آخرین طبقه
+            room->type = 2; 
         } else if (rand() % 5 == 0) {
-            room->type = 1;  // اتاق طلسم با احتمال 20٪
+            room->type = 1; 
         } else {
-            room->type = 0;  // اتاق معمولی
+            room->type = 0;  
         }
 
-        // بررسی مقدار `MAX_ROOM_SPELLS` برای جلوگیری از تقسیم بر صفر
         int max_spells = (MAX_ROOM_SPELLS > 1) ? MAX_ROOM_SPELLS - 1 : 1;
 
-        // افزودن آیتم‌ها بر اساس نوع اتاق
-        if (room->type == 0) {  // اتاق معمولی
+        if (room->type == 0) {  
             room->food_count = rand() % MAX_ROOM_FOOD;
             room->weapon_count = rand() % MAX_ROOM_WEAPONS;
             room->spell_count = rand() % max_spells;
@@ -25,15 +22,15 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
             room->monster_count = rand() % MAX_ROOM_MONSTERS;
             room->trap_count = rand() % MAX_ROOM_TRAP;
         } 
-        else if (room->type == 1) {  // اتاق طلسم (بدون هیولا)
+        else if (room->type == 1) {  
             room->food_count = rand() % MAX_ROOM_FOOD;
             room->weapon_count = rand() % MAX_ROOM_WEAPONS;
-            room->spell_count = rand() % max_spells + 1;  // حداقل یک طلسم
+            room->spell_count = rand() % max_spells + 1;  
             room->gold_count = rand() % (MAX_ROOM_GOLDS / 2);
             room->monster_count = 0;
             room->trap_count = rand() % MAX_ROOM_TRAP;
         } 
-        else if (room->type == 2) {  // اتاق گنج (فقط در طبقه آخر)
+        else if (room->type == 2) {  
             room->food_count = 0;
             room->weapon_count = 0;
             room->spell_count = 0;
@@ -48,7 +45,6 @@ void add_items_to_rooms(Floor* my_floor, int floor_index) {
         int x = -2;
         int y = -2;
 
-        // قرار دادن آیتم‌ها در مکان‌های تصادفی داخل اتاق
         for (int j = 0; j < room->food_count; j++) {
             do
             {

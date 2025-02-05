@@ -20,31 +20,28 @@ void display_main_menu() {
     };
     int n_options = sizeof(options) / sizeof(options[0]);
 
-    int highlight = 0; // Tracks the currently highlighted option
+    int highlight = 0;
     int choice;
     int dot_count = 0;
 
-    // Create a new window for the menu
     int box_start_y = rows / 8;
     int box_start_x = cols / 8;
     int box_height = 6 * rows / 8;
     int box_width = 6 * cols / 8;
     WINDOW *menu_win = newwin(box_height, box_width, box_start_y, box_start_x);
-    keypad(menu_win, TRUE); // Enable keypad input for the window
+    keypad(menu_win, TRUE);
 
-    // Draw the box
     box(menu_win, 0, 0);
     int title_x = (box_width - strlen(" The Rogue ")) / 2;
     mvwprintw(menu_win, 0, title_x, " The Rogue ");
     
     while (1) {
-        // Print menu options with highlighting
         for (int i = 0; i < n_options; i++) {
             mvwprintw(menu_win, 4 + i * 4, title_x, "%s", options[i]);
         }
-            // Print ASCII art inside the box, on the left
-        int art1_start_y = 6; // Vertical position for ASCII art
-        int art1_start_x = 4; // Horizontal position for ASCII art
+           
+        int art1_start_y = 6; 
+        int art1_start_x = 4; 
         mvwprintw(menu_win, art1_start_y, art1_start_x, "       ___------__");
         mvwprintw(menu_win, art1_start_y + 1, art1_start_x, " |\\__-- /\\       _-");
         mvwprintw(menu_win, art1_start_y + 2, art1_start_x, " |/    __      -");
@@ -60,9 +57,9 @@ void display_main_menu() {
         mvwprintw(menu_win, art1_start_y + 12, art1_start_x, "   ____//  ||_");
         mvwprintw(menu_win, art1_start_y + 13, art1_start_x, "  /_____\\ /___\\");
         mvwprintw(menu_win, art1_start_y + 14, art1_start_x, "______________________");
-        // Print second ASCII art inside the box
-    int art2_start_y = 6; // Vertical position for ASCII art 2
-    int art2_start_x = (9 * box_width) / 12; // Horizontal position for ASCII art 2
+        
+    int art2_start_y = 6; 
+    int art2_start_x = (9 * box_width) / 12; 
     mvwprintw(menu_win, art2_start_y, art2_start_x, "         _nnnn_");
     mvwprintw(menu_win, art2_start_y + 1, art2_start_x, "        dGGGGMMb");
     mvwprintw(menu_win, art2_start_y + 2, art2_start_x, "       @p~qp~~FOP");
@@ -81,20 +78,15 @@ void display_main_menu() {
     mvwprintw(menu_win, art2_start_y + 15, art2_start_x, "      `-'       `--' Wassup");
 
 
-
-        // Highlight the current option
         mvwchgat(menu_win, 4 + highlight * 4, title_x, strlen(options[highlight]), A_REVERSE, 0, NULL);
 
         display_loading_bar(menu_win, box_width, dot_count);
 
-        // Increment dot count
-        dot_count = (dot_count + 1) % 13; // Reset after 12 dots
+        dot_count = (dot_count + 1) % 13; 
         napms(500);
         nodelay(menu_win, TRUE);
-        // Refresh the window
         wrefresh(menu_win);
 
-        // Handle user input
         choice = wgetch(menu_win);
         switch (choice) {
             case KEY_UP:
@@ -103,7 +95,7 @@ void display_main_menu() {
             case KEY_DOWN:
                 highlight = (highlight + 1) % n_options;
                 break;
-            case '\n': // Enter key
+            case '\n': 
                 switch (highlight) {
                     case 0:
                         delwin(menu_win);
@@ -136,7 +128,6 @@ void display_main_menu() {
         }
     }
 
-    // Delete the window at the end
     delwin(menu_win);
 }
 
@@ -145,7 +136,6 @@ void guest_menu() {
     noecho();
     curs_set(0);
     refresh();
-    //getch();
     display_game();
 }
 
@@ -163,99 +153,172 @@ void login_menu() {
     int valid_input = 0;
     char username[30];
     char password[30];
+
     WINDOW *settings_win = newwin(box_height, box_width, box_start_y, box_start_x);
-        keypad(settings_win, TRUE);
+    keypad(settings_win, TRUE);
 
-        // Draw the box
-        box(settings_win, 0, 0);
-        int title_x = (box_width - strlen("# loging in #")) / 2;
-        mvwprintw(settings_win, 0, title_x, "# loging in #");
-        mvwprintw(settings_win, 3, 2, "Enter Username: ");
-        mvwprintw(settings_win, 6, 2, "Enter Password: ");
-        wrefresh(settings_win);
-        mvwgetnstr(settings_win, 3, 2 + strlen("Enter Username: "), username, 29);
+    box(settings_win, 0, 0);
+    int title_x = (box_width - strlen("# Logging in #")) / 2;
+    mvwprintw(settings_win, 0, title_x, "# Logging in #");
+    mvwprintw(settings_win, 3, 2, "Enter Username: ");
+    mvwprintw(settings_win, 6, 2, "Enter Password: ");
+    mvwprintw(settings_win, 9, 2, "(Press 'F' if you forgot your password)");
+    wrefresh(settings_win);
+
+    mvwgetnstr(settings_win, 3, 2 + strlen("Enter Username: "), username, 29);
+    
+    int ch = wgetch(settings_win);
+    if (ch == 'F' || ch == 'f') {
+        delwin(settings_win);
+        retrieve_password();
+        return;
+    } else {
+        ungetch(ch); 
         mvwgetnstr(settings_win, 6, 2 + strlen("Enter Password: "), password, 29);
+    }
 
-        FILE *file = fopen("usersInputs.txt", "r");
-        if (file == NULL) {
-            clear();
-            noecho();
-            mvprintw(rows / 2, cols / 2, "Error: Could not open file!");
-            mvprintw(rows / 2 + 2, cols / 2, "Press any key to return to the previous menu...");
-            refresh();
-            getch();
+    FILE *file = fopen("usersInputs.txt", "r");
+    if (file == NULL) {
+        clear();
+        noecho();
+        mvprintw(rows / 2, cols / 2, "Error: Could not open file!");
+        mvprintw(rows / 2 + 2, cols / 2, "Press any key to return to the previous menu...");
+        refresh();
+        getch();
+        curs_set(0);
+        display_main_menu();
+        return;
+    }
+    
+    int found = 0;
+    char line[100];
+    while (fgets(line, sizeof(line), file)) {
+        char stored_username[30], stored_password[50];
+        sscanf(line, "%29s %29s %*s", stored_username, stored_password);
+        if ((strcmp(username, stored_username) == 0) && (strcmp(password, stored_password) == 0)) {
+            found = 1;
+            strcpy(this_game_settings.player_name, stored_username);
+            break;
+        }
+    }
+    fclose(file);
+
+    if (found) {
+        mvwprintw(settings_win, 12, 2, "Welcome to the game %s!", username);
+        mvwprintw(settings_win, 13, 2, "Press 1 to start a new game or 2 to load a saved game");
+        wrefresh(settings_win);
+        char a;
+        while (1) {
             curs_set(0);
-            display_main_menu();
-            return;
-        }
-        int duplicate_found = 0;
-        char line[100];
-        while (fgets(line, sizeof(line), file)) {
-            char stored_username[30], stored_password[50];
-            sscanf(line, "%29s %29s %*s", stored_username, stored_password);
-            if ((strcmp(username, stored_username) == 0) && (strcmp(password, stored_password) == 0)) {
-                duplicate_found = 1;
-                strcpy(this_game_settings.player_name, stored_username);
-                break;
-            }
-        }
-        fclose(file);
-        if(duplicate_found)
-        {
-            mvwprintw(settings_win, 12, 2, "Wellcome to the game %s", username);
-            mvwprintw(settings_win, 13, 2, "please press 1 if you wnat to start a new game or 2 to reload a saved game");
-            wrefresh(settings_win);
-            char a;
-            while(1)
-            {
+            noecho();
+            a = getch();
+            if (a == '1') {
+                clear();
                 curs_set(0);
                 noecho();
-                a = getch();
-                if(a == '1')
-                {
-                    clear();
-                    curs_set(0);
-                    noecho();
-                    delwin(settings_win);
-                    refresh();
-                    display_game();
-                }
-                else if(a == '2')
-                {
-                    clear();
-                    curs_set(0);
-                    noecho();
-                    delwin(settings_win);
-                    refresh();
-                    if (does_save_exist()) {
-                        resume_game();
-                    } else {
-                        printw("No save file found for user: %s\n", this_game_settings.player_name);
-                    }
+                delwin(settings_win);
+                refresh();
+                display_game();
+            } else if (a == '2') {
+                clear();
+                curs_set(0);
+                noecho();
+                delwin(settings_win);
+                refresh();
+                if (does_save_exist()) {
+                    resume_game();
+                } else {
+                    printw("No save file found for user: %s\n", this_game_settings.player_name);
                 }
             }
         }
-        else
-        {
-            mvwprintw(settings_win, 12, 2, "your username or password did not found");
-            mvwprintw(settings_win, 13, 2, "press any key to return to the main menu");
-            wrefresh(settings_win);
-            getch();
-            clear();
-            curs_set(0);
-            noecho();
-            refresh();
-            display_main_menu();
-            return;
-            getch();
-            clear();
-            curs_set(0);
-            noecho();
-            refresh();
-            display_main_menu();
-            return;
-        }
+    } else {
+        mvwprintw(settings_win, 12, 2, "Your username or password was not found!");
+        mvwprintw(settings_win, 13, 2, "Press any key to return to the main menu.");
+        wrefresh(settings_win);
+        getch();
+        clear();
+        curs_set(0);
+        noecho();
+        refresh();
+        display_main_menu();
+        return;
+    }
+}
 
+void retrieve_password() {
+    curs_set(1);
+    clear();
+    refresh();
+    int rows, cols;
+    getmaxyx(stdscr, rows, cols);
+    echo();
+    char username[30], email[50], stored_username[30], stored_email[50], stored_password[30];
+    
+    WINDOW *win = newwin(10, 50, rows / 3, cols / 4);
+    keypad(win, TRUE);
+    
+    box(win, 0, 0);
+    mvwprintw(win, 1, 2, "Password Recovery");
+    mvwprintw(win, 3, 2, "Enter Username: ");
+    mvwprintw(win, 5, 2, "Enter Email: ");
+    wrefresh(win);
+    
+    mvwgetnstr(win, 3, 2 + strlen("Enter Username: "), username, 29);
+    mvwgetnstr(win, 5, 2 + strlen("Enter Email: "), email, 49);
+    
+    FILE *file = fopen("usersInputs.txt", "r");
+    if (file == NULL) {
+        mvwprintw(win, 7, 2, "Error: Could not open file!");
+        mvwprintw(win, 8, 2, "Press any key to return.");
+        wrefresh(win);
+        getch();
+        delwin(win);
+        login_menu();
+        return;
+    }
+
+    int found = 0;
+    char line[100];
+    while (fgets(line, sizeof(line), file)) {
+        sscanf(line, "%29s %29s %49s", stored_username, stored_password, stored_email);
+        if (strcmp(username, stored_username) == 0 && strcmp(email, stored_email) == 0) {
+            found = 1;
+            break;
+        }
+    }
+    fclose(file);
+
+    if (found) {
+        mvwprintw(win, 7, 2, "Your password is: %s", stored_password);
+    } else {
+        mvwprintw(win, 7, 2, "Error: Username or email not found!");
+    }
+
+    mvwprintw(win, 8, 2, "Press any key to return.");
+    wrefresh(win);
+    getch();
+    delwin(win);
+    login_menu();
+}
+
+
+void generate_random_password(char *password, int length) {
+    const char upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const char lower[] = "abcdefghijklmnopqrstuvwxyz";
+    const char digits[] = "0123456789";
+    const char special[] = "!@#$%^&*()-_+=";
+    const char all[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_+=";
+
+    password[0] = upper[rand() % strlen(upper)];
+    password[1] = lower[rand() % strlen(lower)];
+    password[2] = digits[rand() % strlen(digits)];
+    password[3] = special[rand() % strlen(special)];
+
+    for (int i = 4; i < length - 1; i++) {
+        password[i] = all[rand() % strlen(all)];
+    }
+    password[length - 1] = '\0';
 }
 
 void sign_in_menu() {
@@ -280,16 +343,36 @@ void sign_in_menu() {
         WINDOW *settings_win = newwin(box_height, box_width, box_start_y, box_start_x);
         keypad(settings_win, TRUE);
 
-        // Draw the box
         box(settings_win, 0, 0);
         int title_x = (box_width - strlen("# Create new account #")) / 2;
         mvwprintw(settings_win, 0, title_x, "# Create new account #");
         mvwprintw(settings_win, 3, 2, "Enter Username: ");
         mvwprintw(settings_win, 6, 2, "Enter Password: ");
+        mvwprintw(settings_win, 7, 2, "(Press 'g' to generate a random password)");
         mvwprintw(settings_win, 9, 2, "Enter Email: ");
         wrefresh(settings_win);
+
+        wmove(settings_win, 3, 2 + strlen("Enter Username: ")); 
+        wrefresh(settings_win);
         mvwgetnstr(settings_win, 3, 2 + strlen("Enter Username: "), username, 29);
-        mvwgetnstr(settings_win, 6, 2 + strlen("Enter Password: "), password, 29);
+        
+        flushinp();
+
+        wmove(settings_win, 6, 2 + strlen("Enter Password: ")); 
+        wrefresh(settings_win);
+        int ch = wgetch(settings_win);
+        if (ch == 'g') {
+            generate_random_password(password, 12);
+            mvwprintw(settings_win, 6, 2 + strlen("Enter Password: "), "%s", password);
+            wrefresh(settings_win);
+            napms(1000);
+        } else {
+            ungetch(ch);
+            mvwgetnstr(settings_win, 6, 2 + strlen("Enter Password: "), password, 29);
+        }
+
+        wmove(settings_win, 9, 2 + strlen("Enter Email: "));
+        wrefresh(settings_win);
         mvwgetnstr(settings_win, 9, 2 + strlen("Enter Email: "), email, 49);
 
         FILE *file = fopen("usersInputs.txt", "r");
@@ -370,15 +453,6 @@ void sign_in_menu() {
     display_main_menu();
 }
 
-
-void score_table_menu() {
-    clear();
-    mvprintw(2, 10, "=== Score Table ===");
-    mvprintw(4, 10, "This feature is under construction.");
-    mvprintw(6, 10, "Press any key to return to the main menu.");
-    refresh();
-    getch();
-}
 
 void settings_menu() {
     curs_set(0);
@@ -485,24 +559,21 @@ void set_difficulty() {
     };
     int n_options = sizeof(options) / sizeof(options[0]);
 
-    int highlight = 0; // Tracks the currently highlighted option
+    int highlight = 0;
     int choice;
 
-    // Create a new window for the settings menu
     int box_start_y = 2 * rows / 8;
     int box_start_x = 3 * cols / 8;
     int box_height = 1 * rows / 2;
     int box_width = 1 * cols / 4;
     WINDOW *settings_win = newwin(box_height, box_width, box_start_y, box_start_x);
-    keypad(settings_win, TRUE); // Enable keypad input for the window
+    keypad(settings_win, TRUE); 
 
-    // Draw the box
     box(settings_win, 0, 0);
     int title_x = (box_width - strlen(" #Settings# ")) / 2;
     mvwprintw(settings_win, 0, title_x, "# Settings #");
 
     while (1) {
-        // Print menu options with highlighting
         for (int i = 0; i < n_options; i++) {
             if (i == highlight) {
                 wattron(settings_win, A_REVERSE);
@@ -512,11 +583,7 @@ void set_difficulty() {
                 mvwprintw(settings_win, 4 + i * 3, (box_width - strlen(options[i])) / 2, "%s", options[i]);
             }
         }
-
-        // Refresh the window
         wrefresh(settings_win);
-
-        // Handle user input
         choice = wgetch(settings_win);
         switch (choice) {
             case KEY_UP:
@@ -525,7 +592,7 @@ void set_difficulty() {
             case KEY_DOWN:
                 highlight = (highlight + 1) % n_options;
                 break;
-            case '\n': // Enter key
+            case '\n': 
                 switch (highlight) {
                     case 0:
                         this_game_settings.difficulty = 100;
@@ -558,8 +625,6 @@ void set_difficulty() {
                 break;
         }
     }
-
-    // Delete the window at the end
     delwin(settings_win);
 }
 
@@ -579,24 +644,22 @@ void change_character_color() {
     };
     int n_options = sizeof(options) / sizeof(options[0]);
 
-    int highlight = 0; // Tracks the currently highlighted option
+    int highlight = 0;
     int choice;
 
-    // Create a new window for the settings menu
     int box_start_y = 2 * rows / 8;
     int box_start_x = 3 * cols / 8;
     int box_height = 1 * rows / 2;
     int box_width = 1 * cols / 4;
     WINDOW *settings_win = newwin(box_height, box_width, box_start_y, box_start_x);
-    keypad(settings_win, TRUE); // Enable keypad input for the window
-
-    // Draw the box
+    keypad(settings_win, TRUE); 
+    
     box(settings_win, 0, 0);
     int title_x = (box_width - strlen(" #Settings# ")) / 2;
     mvwprintw(settings_win, 0, title_x, "# Settings #");
 
     while (1) {
-        // Print menu options with highlighting
+        
         for (int i = 0; i < n_options; i++) {
             if (i == highlight) {
                 wattron(settings_win, A_REVERSE);
@@ -607,10 +670,10 @@ void change_character_color() {
             }
         }
 
-        // Refresh the window
+        
         wrefresh(settings_win);
 
-        // Handle user input
+        
         choice = wgetch(settings_win);
         switch (choice) {
             case KEY_UP:
@@ -619,7 +682,7 @@ void change_character_color() {
             case KEY_DOWN:
                 highlight = (highlight + 1) % n_options;
                 break;
-            case '\n': // Enter key
+            case '\n': 
                 switch (highlight) {
                     case 0:
                         this_game_settings.hero_color = 1;
@@ -653,7 +716,6 @@ void change_character_color() {
         }
     }
 
-    // Delete the window at the end
     delwin(settings_win);
 }
 
@@ -673,24 +735,22 @@ void select_music() {
     };
     int n_options = sizeof(options) / sizeof(options[0]);
 
-    int highlight = 0; // Tracks the currently highlighted option
+    int highlight = 0; 
     int choice;
 
-    // Create a new window for the settings menu
     int box_start_y = 2 * rows / 8;
     int box_start_x = 3 * cols / 8;
     int box_height = 1 * rows / 2;
     int box_width = 1 * cols / 4;
     WINDOW *settings_win = newwin(box_height, box_width, box_start_y, box_start_x);
-    keypad(settings_win, TRUE); // Enable keypad input for the window
-
-    // Draw the box
+    keypad(settings_win, TRUE);
+    
     box(settings_win, 0, 0);
     int title_x = (box_width - strlen(" #Settings# ")) / 2;
     mvwprintw(settings_win, 0, title_x, "# Settings #");
 
     while (1) {
-        // Print menu options with highlighting
+        
         for (int i = 0; i < n_options; i++) {
             if (i == highlight) {
                 wattron(settings_win, A_REVERSE);
@@ -701,10 +761,9 @@ void select_music() {
             }
         }
 
-        // Refresh the window
+        
         wrefresh(settings_win);
 
-        // Handle user input
         choice = wgetch(settings_win);
         switch (choice) {
             case KEY_UP:
@@ -713,7 +772,7 @@ void select_music() {
             case KEY_DOWN:
                 highlight = (highlight + 1) % n_options;
                 break;
-            case '\n': // Enter key
+            case '\n': 
                 switch (highlight) {
                     case 0:
                         start_music(options[0]);
@@ -747,7 +806,6 @@ void select_music() {
         }
     }
 
-    // Delete the window at the end
     delwin(settings_win);
 }
 
@@ -767,24 +825,21 @@ void choose_hero() {
     };
     int n_options = sizeof(options) / sizeof(options[0]);
 
-    int highlight = 0; // Tracks the currently highlighted option
+    int highlight = 0; 
     int choice;
 
-    // Create a new window for the settings menu
     int box_start_y = 2 * rows / 8;
     int box_start_x = 3 * cols / 8;
     int box_height = 1 * rows / 2;
     int box_width = 1 * cols / 4;
     WINDOW *settings_win = newwin(box_height, box_width, box_start_y, box_start_x);
-    keypad(settings_win, TRUE); // Enable keypad input for the window
+    keypad(settings_win, TRUE); 
 
-    // Draw the box
     box(settings_win, 0, 0);
     int title_x = (box_width - strlen(" #Settings# ")) / 2;
     mvwprintw(settings_win, 0, title_x, "# Settings #");
 
     while (1) {
-        // Print menu options with highlighting
         for (int i = 0; i < n_options; i++) {
             if (i == highlight) {
                 wattron(settings_win, A_REVERSE);
@@ -795,10 +850,8 @@ void choose_hero() {
             }
         }
 
-        // Refresh the window
         wrefresh(settings_win);
 
-        // Handle user input
         choice = wgetch(settings_win);
         switch (choice) {
             case KEY_UP:
@@ -807,7 +860,7 @@ void choose_hero() {
             case KEY_DOWN:
                 highlight = (highlight + 1) % n_options;
                 break;
-            case '\n': // Enter key
+            case '\n': 
                 switch (highlight) {
                     case 0:
                         this_game_settings.hero_symbol = '@'; 
@@ -841,7 +894,6 @@ void choose_hero() {
         }
     }
 
-    // Delete the window at the end
     delwin(settings_win);
 }
 
@@ -851,15 +903,13 @@ void exit_game() {
     refresh();
     int rows, cols;
     getmaxyx(stdscr, rows, cols);
-     // Create a new window for the settings menu
     int box_start_y = 3 * rows / 8;
     int box_start_x = 2 * cols / 8;
     int box_height = 1 * rows / 4;
     int box_width = 1 * cols / 2;
     WINDOW *settings_win = newwin(box_height, box_width, box_start_y, box_start_x);
-    keypad(settings_win, TRUE); // Enable keypad input for the window
+    keypad(settings_win, TRUE);
 
-    // Draw the box
     box(settings_win, 0, 0);
     int title_x = (box_width - strlen("Are you sure you want to leave?")) / 2;
     mvwprintw(settings_win, 1, title_x, "Are you sure you want to leave?");
@@ -869,10 +919,9 @@ void exit_game() {
     };
     int n_options = sizeof(options) / sizeof(options[0]);
 
-    int highlight = 0; // Tracks the currently highlighted option
+    int highlight = 0; 
     int choice;
     while (1) {
-        // Print menu options with highlighting
         for (int i = 0; i < n_options; i++) {
             if (i == highlight) {
                 wattron(settings_win, A_REVERSE);
@@ -882,10 +931,8 @@ void exit_game() {
                 mvwprintw(settings_win, 4 + i * 3, (box_width) / 2, "%s", options[i]);
             }
         }
-        // Refresh the window
         wrefresh(settings_win);
 
-        // Handle user input
         choice = wgetch(settings_win);
         switch (choice) {
             case KEY_UP:
@@ -894,7 +941,7 @@ void exit_game() {
             case KEY_DOWN:
                 highlight = (highlight + 1) % n_options;
                 break;
-            case '\n': // Enter key
+            case '\n': 
                 switch (highlight) {
                     case 0:
                         close_all_ncurses_windows();
@@ -910,32 +957,27 @@ void exit_game() {
                 break;
                  }
     }
-
-    // Delete the window at the end
     delwin(settings_win);
     
 }
 
 void display_loading_bar(WINDOW *menu_win, int box_width, int dot_count) {
     noecho();
-    const char *loading_text = "Loading"; // Base text for loading
-    int loading_x = (box_width - (strlen(loading_text) + dot_count)) / 2; // Center text horizontally
-    int loading_y = getmaxy(menu_win) - 3; // Position near the bottom of the window
+    const char *loading_text = "Loading"; 
+    int loading_x = (box_width - (strlen(loading_text) + dot_count)) / 2; 
+    int loading_y = getmaxy(menu_win) - 3; 
+    
+    mvwaddch(menu_win, loading_y, 0, ACS_VLINE); 
+    mvwaddch(menu_win, loading_y, box_width - 1, ACS_VLINE); 
 
-    // Re-draw the left and right border
-    mvwaddch(menu_win, loading_y, 0, ACS_VLINE); // Left border
-    mvwaddch(menu_win, loading_y, box_width - 1, ACS_VLINE); // Right border
-
-    // Create the loading text with dots
     char loading_with_dots[20];
     snprintf(loading_with_dots, sizeof(loading_with_dots), "%s%s", loading_text, "............." + (12 - dot_count));
 
-    // Clear only the middle part where loading text is displayed
-    mvwprintw(menu_win, loading_y, 1, "%-*s", box_width - 2, ""); // Clear the line except borders
-
-    // Print the loading text
-    mvwprintw(menu_win, loading_y, loading_x, "%s", loading_with_dots); // Print loading text
-    wrefresh(menu_win); // Refresh the window to display changes
+    
+    mvwprintw(menu_win, loading_y, 1, "%-*s", box_width - 2, ""); 
+    
+    mvwprintw(menu_win, loading_y, loading_x, "%s", loading_with_dots); 
+    wrefresh(menu_win); 
 }
 
 int regex_match(const char *string, const char *pattern) {
@@ -944,7 +986,7 @@ int regex_match(const char *string, const char *pattern) {
 
     ret = regcomp(&regex, pattern, REG_EXTENDED);
     if (ret) {
-        return 0; // Regex compilation failed
+        return 0; 
     }
 
     ret = regexec(&regex, string, 0, NULL, 0);

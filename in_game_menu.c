@@ -6,7 +6,7 @@ MessageWindow* init_message_window(int width,int height, int y) {
     msg_win->width = width;
     msg_win->type = y;
     if(y == 0)
-        msg_win->win = newwin(3, width, 0, 0);  // ارتفاع ۳، عرض `width`، مکان `(0,0)`
+        msg_win->win = newwin(3, width, 0, 0);  
     else
         msg_win->win = newwin(3, width, height - 3, 0);
     wattron(msg_win->win, COLOR_PAIR(1));
@@ -18,9 +18,9 @@ MessageWindow* init_message_window(int width,int height, int y) {
 
 void print_data(MessageWindow* data_win, Character hero, int level)
 {
-    werase(data_win->win);  // پاک کردن پنجره
+    werase(data_win->win);  
     wattron(data_win->win, COLOR_PAIR(1));
-    box(data_win->win, 0, 0);  // کشیدن کادر دور `window`
+    box(data_win->win, 0, 0);  
     wattroff(data_win->win, COLOR_PAIR(1));
     mvwprintw(data_win->win, 1, data_win->width / 8, "User: %s", this_game_settings.player_name);
     mvwprintw(data_win->win, 1, data_win->width * 3 / 8, "Health: %d",hero.health);
@@ -30,15 +30,15 @@ void print_data(MessageWindow* data_win, Character hero, int level)
 }
 
 void print_message(MessageWindow* msg_win, const char* msg) {
-    werase(msg_win->win);  // پاک کردن پنجره
+    werase(msg_win->win);  
     wattron(msg_win->win, COLOR_PAIR(1));
-    box(msg_win->win, 0, 0);  // کشیدن کادر دور `window`
+    box(msg_win->win, 0, 0);  
     wattroff(msg_win->win, COLOR_PAIR(1));
     if (msg && strlen(msg) > 0) {  
-        mvwprintw(msg_win->win, 1, (msg_win->width - strlen(msg)) / 2, "%s", msg);  // نمایش پیام در `window`
+        mvwprintw(msg_win->win, 1, (msg_win->width - strlen(msg)) / 2, "%s", msg); 
     }
 
-    wrefresh(msg_win->win);  // به‌روزرسانی `window`
+    wrefresh(msg_win->win);
 }
 
 void destroy_message_window(MessageWindow* msg_win) {
@@ -83,7 +83,6 @@ void show_combined_item_menu(Game *main_game, MessageWindow* msg_win, MessageWin
         werase(spell_win); box(spell_win, 0, 0);
         wattroff(spell_win, COLOR_PAIR(2));
 
-        // عنوان‌ها
         wattron(food_win, COLOR_PAIR(3));
         wattron(weapon_win, COLOR_PAIR(3));
         wattron(spell_win, COLOR_PAIR(3));
@@ -97,7 +96,6 @@ void show_combined_item_menu(Game *main_game, MessageWindow* msg_win, MessageWin
         wattroff(weapon_win, COLOR_PAIR(3));
         wattroff(spell_win, COLOR_PAIR(3));
 
-        // نمایش آیتم‌ها
         int max_items[3] = {main_game->hero.food_count, main_game->hero.weapon_count, main_game->hero.spell_count};
 
         for (int menu = 0; menu < 3; menu++) {
@@ -164,7 +162,7 @@ void show_combined_item_menu(Game *main_game, MessageWindow* msg_win, MessageWin
             case KEY_DOWN:
                 highlight[current_menu] = (highlight[current_menu] < max_items[current_menu]) ? highlight[current_menu] + 1 : 0;
                 break;
-            case '\n': // انتخاب آیتم
+            case '\n': 
                 if(current_menu == 0)
                 {
                     main_game->hero.health += main_game->hero.my_foods[highlight[current_menu]].health_care;
@@ -224,7 +222,7 @@ void show_combined_item_menu(Game *main_game, MessageWindow* msg_win, MessageWin
                     }
                 }
                 break;
-            case 'q': // ESC خروج
+            case 'q':
                 delwin(food_win);
                 delwin(weapon_win);
                 delwin(spell_win);
