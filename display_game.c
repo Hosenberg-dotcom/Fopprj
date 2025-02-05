@@ -52,7 +52,7 @@ void make_floor(Game* main_game, int level, MessageWindow* msg_win, MessageWindo
     do {
         x = random_room->position.x + (rand() % (random_room->width - 2)) + 1;
         y = random_room->position.y + (rand() % (random_room->height - 2)) + 1;
-    } while (main_game->floors[level].map[y][x] != '.');  // تا زمانی که نقطه خالی پیدا شود
+    } while (main_game->floors[level].map[y][x] != '.');
 
     int a, b;
     do {

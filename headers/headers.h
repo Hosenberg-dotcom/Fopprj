@@ -238,7 +238,7 @@ void check_projectile_hit(Game* main_game, int level, int dy, int dx, MessageWin
 void remove_weapon_if_empty(Character* hero, MessageWindow* msg_win);
 void find_and_put_down_weapon(Game* main_game, int level, Point position, MessageWindow* msg_win);
 void hit_monster(Game* main_game, int level, MessageWindow* msg_win, Point position);
-void create_treasure_room(int height, int width, Game* main_game);
+void create_treasure_room(int height, int width, Game* main_game, int level, MessageWindow* msg_win, MessageWindow* data_win);
 int save_game(Game* main_game, int level);
 int load_game(Game* main_game, int* level);
 void resume_game();

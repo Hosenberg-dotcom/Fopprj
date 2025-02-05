@@ -195,9 +195,9 @@ Point dequeue(Queue* q) {
     return p;
 }
 
-void create_treasure_room(int height, int width, Game* main_game)
+void create_treasure_room(int height, int width, Game* main_game, int level, MessageWindow* msg_win, MessageWindow* data_win)
 {
-    Room* room = &main_game->floors[4].rooms[0]; // سطح ۳ = آخرین سطح
+    Room* room = &main_game->floors[4].rooms[0];
     
     room->position.x = width * 3 / 8;
     room->position.y = height * 3 / 8;
@@ -210,6 +210,7 @@ void create_treasure_room(int height, int width, Game* main_game)
     room->spell_count = 0;
     room->type = 2;
     room->weapon_count = 0;
+    main_game->floors[4].room_count = 1;
 
     main_game->floors[4].map = create_empty_map(width, height);
 
@@ -235,7 +236,7 @@ void create_treasure_room(int height, int width, Game* main_game)
         room->monster[i].type = 4;
         room->monster[i].damage = 30;
         room->monster[i].health = 30;
-        room->monster[i].move_left = 10;
+        room->monster[i].move_left = 50;
         room->monster[i].symbol = 'U';
 
         do {
@@ -263,9 +264,24 @@ void create_treasure_room(int height, int width, Game* main_game)
 
     for(int i = 0; i < height; i++) {
         for(int j = 0; j < width; j++) {
-            mvaddch(i + 3, j, main_game->floors[4].map[i][j]);
+            char printed_ch = main_game->floors[4].map[i][j];
+            if((printed_ch == '@') || (printed_ch == '&') || (printed_ch == '%') || (printed_ch == '$')
+                        || (printed_ch == 'D') || (printed_ch == 'F') || (printed_ch == 'S') || (printed_ch == 'U') || (printed_ch == 'G'))
+                        {
+                            attron(COLOR_PAIR(this_game_settings.hero_color));
+                            mvaddch(i + 3, j, main_game->floors[4].map[i][j]);
+                            attroff(COLOR_PAIR(this_game_settings.hero_color));
+                        }
+                        else
+                        {
+                            attron(COLOR_PAIR(4));
+                            mvaddch(i + 3, j, main_game->floors[4].map[i][j]);
+                            attroff(COLOR_PAIR(4));
+                        }
+            
         }
     }
 
     refresh();
+    character_move(main_game, msg_win, data_win, level);
 }

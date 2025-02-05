@@ -1086,8 +1086,6 @@ void display_profile() {
         }
         fclose(file);
     }
-    /*mvwprintw(profile_win, 5, 2, "%s", this_game_settings.player_name);
-    mvwprintw(profile_win, 6, 2, "%s", username);*/
     if (found) {
         mvwprintw(profile_win, 3, 2, "Username:");
         mvwprintw(profile_win, 5, 2, "%s", username);

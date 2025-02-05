@@ -47,6 +47,22 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
     print_data(data_win, main_game->hero, level);
     while(break_point && ((ch = getch()) != 'q'))
     {
+        if(main_game->hero.health <= 0)
+        {
+            print_message(msg_win, "You died!");
+            getch();
+            update_player_score(this_game_settings.player_name, main_game->hero.gold * (1 + level ), main_game->hero.gold, 0);
+            display_main_menu();
+            return;
+        }
+        if(level == 4 && main_game->floors[level].rooms[0].monster_count == 0)
+        {
+            print_message(msg_win, "You won!");
+            getch();
+            update_player_score(this_game_settings.player_name, main_game->hero.gold * (1 + level ), main_game->hero.gold, 1);
+            display_main_menu();
+            return;
+        }
         speed_spell(main_game);
         health_speed(main_game, &last_health);
         damage_spell(main_game);
@@ -281,8 +297,7 @@ void character_move(Game* main_game, MessageWindow* msg_win,MessageWindow* data_
                 level = 4;
                 int rows, cols;
                 getmaxyx(stdscr, rows, cols);
-                create_treasure_room(rows, cols, main_game);
-                getch();
+                create_treasure_room(rows + 6, cols, main_game, level, msg_win, data_win);
             }
                 break;
         case ' ':
